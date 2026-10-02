@@ -1,20 +1,17 @@
 # Memoria del Laboratorio — Failover Routing
 
-> Plantilla de documentación. Completar **todos** los campos. Los bloques entre `<!-- -->` son instrucciones (se borran al entregar).
+**Grupo:** 3
 
-**Grupo:** <!-- número/nombre del grupo -->
 **Materia:** Gestión Operativa y Seguridad en Redes (GOYS)
-**Fecha de entrega:** <!-- viernes 23/10/2026 -->
+
+**Fecha de entrega:** viernes 23/10/2026
 
 ## Integrantes y roles
 
 | Integrante | Rol |
 |-----------|-----|
-| <!-- nombre --> | R1 — Líder / Edge-WAN |
-| <!-- nombre --> | R2 — Proveedores |
-| <!-- nombre --> | R3 — Core |
-| <!-- nombre --> | R4 — Distribución |
-| <!-- nombre --> | R5 — Hosts / QA / Operación |
+| Facundo Daza | R1 (Líder / Edge-WAN) + R2 (Proveedores) + R5 (QA/Ops Fase 1 y 3) |
+| Irineo Hiriart | R3 (Core) + R4 (Distribución) + R5 (QA/Ops Fase 2 y 4) |
 
 ---
 
@@ -22,171 +19,79 @@
 
 ### 1.1 Corrección del diagrama
 
-> Del diagrama "Enterprise Network Design (Cisco)", indiquen qué defectos corrigieron y justifiquen cada corrección.
-
 | # | Defecto detectado | Corrección aplicada | Justificación |
 |:-:|-------------------|---------------------|---------------|
-| 1 | <!-- --> | <!-- --> | <!-- --> |
-| 2 | <!-- --> | <!-- --> | <!-- --> |
-| 3 | <!-- --> | <!-- --> | <!-- --> |
+| 1 | Subredes solapadas en la capa de acceso. | Se asignó `192.168.10.0/24` para usuarios y `192.168.20.0/24` para servidores. | Previene asimetría de enrutamiento y permite la sumarización correcta de rutas en OSPF. |
+| 2 | Ausencia de enlace core-core. | Se agregó un enlace directo L3 (10.0.0.8/30) entre CORE-1 y CORE-2. | Evita la partición del backbone (área 0) y el descarte de tráfico ante la caída de enlaces cruzados. |
+| 3 | HSRP mal ubicado en el Core. | Se desplazó la redundancia de gateway (VRRP) a los switches DIST-1 y DIST-2. | Libera al Core para dedicarse exclusivamente al tránsito rápido de paquetes, ubicando las políticas L3 en Distribución. |
 
 ### 1.2 Plan de direccionamiento (IPAM)
 
-> Completar. Regla: **cero solapamiento** — cada enlace un /30 distinto, cada LAN un /24 distinto.
-
 | Enlace / Red | Subred | Dispositivo A (IP/iface) | Dispositivo B (IP/iface) |
 |--------------|:------:|--------------------------|--------------------------|
-| ISP-1 ↔ EDGE | <!-- --> | <!-- --> | <!-- --> |
-| ISP-2 ↔ EDGE | <!-- --> | <!-- --> | <!-- --> |
-| EDGE ↔ CORE-1 | <!-- --> | <!-- --> | <!-- --> |
-| EDGE ↔ CORE-2 | <!-- --> | <!-- --> | <!-- --> |
-| CORE-1 ↔ CORE-2 (core-core) | <!-- --> | <!-- --> | <!-- --> |
-| CORE ↔ DIST-1 (×2) | <!-- --> | <!-- --> | <!-- --> |
-| CORE ↔ DIST-2 (×2) | <!-- --> | <!-- --> | <!-- --> |
-| USERS (gateway VRRP) | <!-- --> | <!-- --> | <!-- --> |
-| SERVERS (gateway VRRP) | <!-- --> | <!-- --> | <!-- --> |
+| ISP-1 ↔ EDGE | `203.0.113.0/30` | ISP-1 (203.0.113.1 - 0/0) | EDGE (203.0.113.2 - 0/0) |
+| ISP-2 ↔ EDGE | `198.51.100.0/30`| ISP-2 (198.51.100.1 - 0/0) | EDGE (198.51.100.2 - 1/0) |
+| EDGE ↔ CORE-1 | `10.0.0.0/30` | EDGE (10.0.0.1 - 2/0) | CORE-1 (10.0.0.2 - 0/0) |
+| EDGE ↔ CORE-2 | `10.0.0.4/30` | EDGE (10.0.0.5 - 3/0) | CORE-2 (10.0.0.6 - 0/0) |
+| CORE-1 ↔ CORE-2 (core-core) | `10.0.0.8/30` | CORE-1 (10.0.0.9 - 1/0) | CORE-2 (10.0.0.10 - 1/0) |
+| CORE ↔ DIST-1 (×2) | `10.0.0.12/30`<br>`10.0.0.20/30` | CORE-1 (10.0.0.13 - 2/0)<br>CORE-2 (10.0.0.21 - 2/0) | DIST-1 (10.0.0.14 - 0/0)<br>DIST-1 (10.0.0.22 - 1/0) |
+| CORE ↔ DIST-2 (×2) | `10.0.0.16/30`<br>`10.0.0.24/30` | CORE-1 (10.0.0.17 - 3/0)<br>CORE-2 (10.0.0.25 - 3/0) | DIST-2 (10.0.0.18 - 0/0)<br>DIST-2 (10.0.0.26 - 1/0) |
+| USERS (gateway VRRP) | `192.168.10.0/24`| DIST-1 (192.168.10.2 - 2/0) | DIST-2 (192.168.10.3 - 2/0) |
+| SERVERS (gateway VRRP) | `192.168.20.0/24`| DIST-1 (192.168.20.2 - 3/0) | DIST-2 (192.168.20.3 - 3/0) |
 
 **VRRP:**
 
 | Grupo | VRID | Master | Priority | IP virtual |
 |-------|:----:|:------:|:--------:|:----------:|
-| USERS | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
-| SERVERS | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
+| USERS | 10 | DIST-1 | 150 | `192.168.10.1` |
+| SERVERS | 20 | DIST-2 | 150 | `192.168.20.1` |
 
-**Router-IDs:** <!-- tabla: nodo → router-id -->
+**Router-IDs:** 
+- EDGE: `1.1.1.1`
+- CORE-1: `4.4.4.4`
+- CORE-2: `5.5.5.5`
+- DIST-1: `6.6.6.6`
+- DIST-2: `7.7.7.7`
 
 ### 1.3 Política de seguridad
 
-- **Usuarios y privilegios:** <!-- -->
-- **Servicios que se deshabilitan:** <!-- -->
-- **Claves de autenticación** (OSPF / BGP / VRRP): <!-- -->
+- **Usuarios y privilegios:** Usuario `admin` deshabilitado. Creación de `netadmin` (full) para configuración y `monitor` (read) para verificación.
+- **Servicios que se deshabilitan:** Telnet, FTP, WWW, API, MAC-Telnet, MAC-Ping. 
+
+- Gestión permitida: La administración de los equipos se realizará a través de la Consola local del simulador GNS3 y mediante winbox (interfaz gráfica de MikroTik) habilitado en su puerto seguro por defecto.
+- **Claves de autenticación** (OSPF / BGP / VRRP): 
+  - OSPF: `OspfGoys26!`
+  - BGP: `BgpGoys26!`
+  - VRRP: `VrrpGoys26!`
 
 ### 1.4 Política de operación
 
-- **Formato del change log** (convención de commits): <!-- -->
-- **Política de backup** (cuándo y cómo): <!-- -->
+- **Formato del change log** (convención de commits): Uso estricto de Conventional Commits (`tipo(alcance): descripción`). Cada cambio debe vincularse a un rol.
+- **Política de backup** (cuándo y cómo): Ejecución de `/export file=backup-<nodo>-<fecha>.rsc` e inclusión en el directorio `/backups` del repositorio tras la estabilización de cada Epic (F1, F2, F3).
 
 ---
 
 ## 2. Topología
 
-> Pegar acá la captura del proyecto GNS3 (o el diagrama) con las 5 capas identificadas.
-
-```
-[INTERNET] [EDGE] [CORE] [DISTRIBUTION] [ACCESS]
-<!-- insertar diagrama/captura -->
-```
+> *Nota: La captura física de la topología implementada y validada en el simulador GNS3 se incluirá en esta sección tras la finalización de la Fase F1, de acuerdo con el cronograma del proyecto.*
 
 ---
 
 ## 3. Configuración
 
-> Un bloque por dispositivo. Se puede referenciar el archivo `.rsc` del repo y pegar el contenido final.
-
-### 3.1 ISP-1
-```routeros
-<!-- config final -->
-```
-
-### 3.2 ISP-2
-```routeros
-<!-- config final -->
-```
-
-### 3.3 EDGE
-```routeros
-<!-- config final -->
-```
-
-### 3.4 CORE-1
-```routeros
-<!-- config final -->
-```
-
-### 3.5 CORE-2
-```routeros
-<!-- config final -->
-```
-
-### 3.6 DIST-1
-```routeros
-<!-- config final -->
-```
-
-### 3.7 DIST-2
-```routeros
-<!-- config final -->
-```
-
-### 3.8 Hosts (PC-USER / SRV)
-```bash
-<!-- config final de los hosts -->
-```
+> *Nota: Los scripts de configuración final (.rsc) de cada nodo de la red se documentarán en esta sección al concluir la Fase F3, una vez estabilizados los protocolos de enrutamiento y redundancia (VRRP, OSPF, BGP).*
 
 ---
 
 ## 4. Verificación
 
-### 4.1 Conectividad básica
-
-| Prueba | Comando | Resultado |
-|--------|---------|-----------|
-| ping intra-LAN (PC-USER ↔ SRV) | <!-- --> | <!-- --> |
-| traceroute a ISP (loopback) | <!-- --> | <!-- --> |
-
-> Pegar capturas de las tablas: `/routing/route/print`, `/interface/vrrp/print`, `/routing/bgp/session/print`.
-
-### 4.2 Los 5 drills de failover
-
-> Para cada drill, documentar con la estructura **detección → respuesta → recuperación → post-mortem** y el **tiempo medido**.
-
-#### Drill 1 — VRRP: se cae el gateway
-- **Detección:** <!-- -->
-- **Respuesta:** <!-- -->
-- **Recuperación:** <!-- -->
-- **Tiempo medido:** <!-- -->
-- **Post-mortem** (¿por qué funcionó? ¿qué aprendieron?): <!-- -->
-
-#### Drill 2 — OSPF: se corta el camino interno
-- **Detección:** <!-- -->
-- **Respuesta:** <!-- -->
-- **Recuperación:** <!-- -->
-- **Tiempo medido:** <!-- -->
-- **Post-mortem:** <!-- -->
-
-#### Drill 3 — BGP: se cae el proveedor
-- **Detección:** <!-- -->
-- **Respuesta:** <!-- -->
-- **Recuperación:** <!-- -->
-- **Tiempo medido:** <!-- -->
-- **Post-mortem:** <!-- -->
-
-#### Drill 4 — check-gateway: failover estático de enlace
-- **Detección:** <!-- -->
-- **Respuesta:** <!-- -->
-- **Recuperación:** <!-- -->
-- **Tiempo medido:** <!-- -->
-- **Post-mortem:** <!-- -->
-
-#### Drill 5 — Load-sharing VRRP: ambos DIST activos
-- **Detección:** <!-- -->
-- **Respuesta:** <!-- -->
-- **Recuperación:** <!-- -->
-- **Post-mortem:** <!-- -->
+> *Nota: Los resultados de las pruebas de conectividad end-to-end (ping, traceroute) y los registros de tiempo de convergencia correspondientes a los 5 simulacros de falla (drills) serán ejecutados y documentados durante la Fase F4.*
 
 ---
 
 ## 5. Seguridad aplicada
 
-| Mecanismo | Dónde se aplicó | Verificación (¿cómo probaron que funciona?) |
-|-----------|-----------------|---------------------------------------------|
-| Hardening (usuarios/servicios) | <!-- --> | <!-- --> |
-| OSPF MD5 | <!-- --> | <!-- --> |
-| BGP TCP-MD5 | <!-- --> | <!-- --> |
-| VRRP auth | <!-- --> | <!-- --> |
-| Firewall/ACL (edge) | <!-- --> | <!-- --> |
-
-> Prueba de seguridad obligatoria: adyacencia OSPF / sesión BGP debe **fallar** con clave incorrecta. Documentar el resultado.
+> *Nota: Las evidencias de la aplicación de las políticas de hardening y las validaciones de rechazo de adyacencias mediante el uso de claves incorrectas se reportarán al finalizar la Fase F4.*
 
 ---
 
@@ -194,58 +99,46 @@
 
 ### 6.1 Change log
 
-| Fecha | Responsable | Cambio | Motivo | Cómo se revierte |
-|-------|-------------|--------|--------|------------------|
-| <!-- --> | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
+> *Nota: El registro de cambios se completará progresivamente, reflejando el historial estructurado de commits del repositorio Git a lo largo de las fases F1 a F5.*
 
 ### 6.2 Backups
 
-> Evidencia de backup (`/export` + `/system backup save`) y de **restore probado**.
-
-<!-- pegar evidencia -->
+> *Nota: Las evidencias de exportación y respaldo de configuraciones probadas se adjuntarán conforme se superen los hitos de implementación.*
 
 ### 6.3 Monitoreo
 
-> Qué se monitorea (enlaces, vecinos OSPF, sesiones BGP, VRRP) y con qué (SNMP, chequeos).
-
-<!-- -->
+> *Nota: La configuración y los resultados del monitoreo continuo (SNMP y chequeos de estado) se incluirán durante la ejecución de la Fase F4.*
 
 ---
 
 ## 7. Capturas
 
-> Listar o enlazar la carpeta de capturas (drills, tablas, failover).
-
-<!-- -->
+> *Nota: El directorio y los enlaces a las evidencias visuales de los estados del sistema, tablas de enrutamiento y simulacros se integrarán en las fases operativas correspondientes.*
 
 ---
 
 ## 8. Conclusiones y lecciones aprendidas
 
-> Post-mortem global: qué salió bien, qué fue difícil, qué harían distinto.
-
-<!-- -->
+> *Nota: El análisis post-mortem global y las conclusiones técnicas sobre la resiliencia de la arquitectura diseñada se redactarán al concluir la Fase F5.*
 
 ---
 
 ## 9. Referencias
 
-> Lecturas y videos efectivamente consultados.
-
-- <!-- -->
-- <!-- -->
+- Documentación oficial de MikroTik RouterOS (VRRP, OSPF, BGP).
+- RFC 5798 (Virtual Router Redundancy Protocol).
+- RFC 2328 (OSPF Version 2).
+- Diapositivas y material de cátedra: "Failover Routing".
 
 ---
 
 ## 10. Checklist de entrega
 
-> Marcar **todo** antes de entregar. Si algo no está, el lab no está completo.
-
 ### Diseño (F0)
-- [ ] IPAM completo y sin solapamiento
-- [ ] Corrección del diagrama justificada (≥ 3 defectos)
-- [ ] Política de seguridad definida (usuarios, servicios, claves)
-- [ ] Política de operación definida (change log + backup)
+- [x] IPAM completo y sin solapamiento
+- [x] Corrección del diagrama justificada (≥ 3 defectos)
+- [x] Política de seguridad definida (usuarios, servicios, claves)
+- [x] Política de operación definida (change log + backup)
 
 ### Redes
 - [ ] 7 CHR + 2 switches + 2 hosts levantados y cableados
