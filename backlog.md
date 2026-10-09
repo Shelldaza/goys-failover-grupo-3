@@ -41,23 +41,27 @@
 ## Epic F1 — Topología + hardening + backup · *vence vie 9/10*
 
 ### Despliegue (7 CHR + 2 switches + 2 hosts)
-- [ ] [R3] Importar imagen CHR y armar las 5 capas en GNS3.
-- [ ] [R4] Cablear interfaces físicas según el diagrama F0.
+- [x] [R3] Importar imagen CHR y armar las 5 capas en GNS3.
+- [x] [R4] Cablear interfaces físicas según el diagrama F0.
 
 ### IPs de enlace + loopbacks
-- [ ] [R1] Configurar IPs de enlaces externos en EDGE, ISP-1 e ISP-2.
-- [ ] [R3] Configurar IPs y loopbacks en CORE-1, CORE-2, DIST-1 y DIST-2.
-- [ ] [R5] Configurar IP/Gateway en PC-USER y SRV.
+- [x] [R1] Configurar IPs de enlaces externos e internos y loopback en EDGE, e IPs de enlace y loopbacks en ISP-1 e ISP-2.
+- [x] [R3] Configurar IPs y loopbacks en CORE-1, CORE-2, DIST-1 y DIST-2.
+- [x] [R5] Configurar IP/Gateway en PC-USER y SRV.
+- [x] [R5] Verificar pings entre vecinos directos y desde los hosts hacia ambos routers de distribución.
 
 ### Snapshot BASE
-- [ ] [R5] Tomar snapshot en GNS3 tras validar pings directos.
+- [x] [R5] Tomar y documentar snapshot BASE con direccionamiento y hardening aplicados.
 
 ### Hardening (los 7 routers)
-- [ ] [R1] Aplicar script de creación de usuarios/servicios en EDGE/ISPs.
-- [ ] [R4] Aplicar script de creación de usuarios/servicios en núcleo interno.
+- [x] [R1] Aplicar creación de usuarios y deshabilitación de servicios e interfaces sin uso en EDGE/ISPs.
+- [x] [R4] Aplicar creación de usuarios y deshabilitación de servicios e interfaces sin uso en CORE/DIST.
+- [x] [R5] Verificar usuarios, permisos, servicios e interfaces en los siete routers.
+- [x] [R5] Probar ingreso y consulta de direcciones con monitor en ISP-1.
 
-### Backup inicial (`/export`)
-- [ ] [R5] Extraer archivos .rsc de los 7 equipos y comitear a Git.
+### Backup inicial (/export)
+- [x] [R5] Generar y guardar los siete exports .rsc.
+- [x] [R5] Comitear los exports y la documentación de F1 a Git.
 
 ---
 

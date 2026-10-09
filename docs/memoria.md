@@ -73,25 +73,89 @@
 
 ## 2. Topología
 
-> *Nota: La captura física de la topología implementada y validada en el simulador GNS3 se incluirá en esta sección tras la finalización de la Fase F1, de acuerdo con el cronograma del proyecto.*
+Se implementó en GNS3 una topología de cinco capas: Internet,
+Edge, Core, Distribución y Acceso. Está compuesta por siete
+routers MikroTik CHR con RouterOS 7.16, dos switches Ethernet
+y dos hosts VPCS, conectados mediante 15 enlaces.
+
+Cada switch de acceso conecta su host con ambos routers de
+distribución. USERS y SERVERS constituyen segmentos separados.
+Se incorporó el enlace L3 directo entre CORE-1 y CORE-2.
+
+![Topología F1](../capturas/F1/F1-topologia.png)
 
 ---
 
 ## 3. Configuración
 
-> *Nota: Los scripts de configuración final (.rsc) de cada nodo de la red se documentarán en esta sección al concluir la Fase F3, una vez estabilizados los protocolos de enrutamiento y redundancia (VRRP, OSPF, BGP).*
+### 3.1 Configuración base — F1
+
+Se configuraron las identidades, las direcciones de los enlaces
+/30, las direcciones reales de distribución en las LAN y las
+loopbacks /32 sobre la interfaz lo.
+
+| Router | Loopback |
+|---|---|
+| EDGE | 1.1.1.1/32 |
+| ISP-1 | 2.2.2.2/32 |
+| ISP-2 | 3.3.3.3/32 |
+| CORE-1 | 4.4.4.4/32 |
+| CORE-2 | 5.5.5.5/32 |
+| DIST-1 | 6.6.6.6/32 |
+| DIST-2 | 7.7.7.7/32 |
+
+PC-USER tiene 192.168.10.100/24 y gateway 192.168.10.1.
+SRV tiene 192.168.20.100/24 y gateway 192.168.20.1.
+
+Los gateways virtuales quedan reservados para VRRP en F2.
+Los clientes DHCP preconfigurados en ether1 fueron deshabilitados.
+
+Las configuraciones de OSPF, VRRP y BGP quedan pendientes para
+F2 y F3. Los exports de la configuración base están en backups/.
 
 ---
 
 ## 4. Verificación
 
-> *Nota: Los resultados de las pruebas de conectividad end-to-end (ping, traceroute) y los registros de tiempo de convergencia correspondientes a los 5 simulacros de falla (drills) serán ejecutados y documentados durante la Fase F4.*
+### 4.1 Verificación de F1
+
+Se verificó conectividad mediante ping en los nueve enlaces
+directos entre routers. También se comprobó que PC-USER alcanza
+192.168.10.2 y 192.168.10.3, y que SRV alcanza 192.168.20.2
+y 192.168.20.3.
+
+Las pruebas se realizaron nuevamente después del hardening,
+con resultados satisfactorios. Las evidencias se encuentran
+en capturas/F1/.
+
+La conectividad entre redes y los simulacros de failover quedan
+pendientes para las fases posteriores.
 
 ---
 
 ## 5. Seguridad aplicada
 
-> *Nota: Las evidencias de la aplicación de las políticas de hardening y las validaciones de rechazo de adyacencias mediante el uso de claves incorrectas se reportarán al finalizar la Fase F4.*
+### 5.1 Hardening de F1
+
+En los siete routers se creó netadmin con grupo full y monitor
+con un grupo personalizado denominado monitoring, cuyos
+permisos son local, read y winbox. Se deshabilitó el usuario admin.
+
+Se deshabilitaron Telnet, FTP, HTTP, HTTPS, SSH, API y API-SSL.
+Winbox por IP quedó habilitado. También se deshabilitaron
+MAC-Telnet, MAC-Winbox y MAC-Ping.
+
+En los ISP se conservaron activas únicamente las interfaces
+ether1. En EDGE, CORE y DIST se conservaron ether1 a ether4,
+deshabilitando las interfaces Ethernet restantes.
+
+Se verificaron usuarios, permisos, servicios e interfaces en
+los siete routers. El ingreso con monitor y la consulta de
+direcciones se probaron en ISP-1.
+
+La autenticación de los protocolos de enrutamiento y el
+firewall de EDGE quedan pendientes para las fases posteriores.
+
 
 ---
 
@@ -103,7 +167,22 @@
 
 ### 6.2 Backups
 
-> *Nota: Las evidencias de exportación y respaldo de configuraciones probadas se adjuntarán conforme se superen los hitos de implementación.*
+Se generaron y guardaron en backups/ los siete exports de F1,
+con nombres backup-<nodo>-2026-10-09.rsc.
+
+Estos exports contienen la configuración textual exportable.
+Los archivos obtenidos no incluyen los usuarios netadmin y
+monitor, sus contraseñas ni la deshabilitación de admin; esos
+elementos deben reponerse al restaurar desde los exports.
+
+Se creó en GNS3 el snapshot BASE con los nodos detenidos,
+después de configurar y verificar direccionamiento y hardening.
+El snapshot conserva el estado base del proyecto.
+
+![Snapshot BASE](../capturas/F1/F1-snapshot-BASE.png)
+
+La prueba de restauración queda pendiente.
+
 
 ### 6.3 Monitoreo
 
