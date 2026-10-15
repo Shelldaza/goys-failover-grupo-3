@@ -262,6 +262,14 @@ Los archivos obtenidos no incluyen los usuarios netadmin y
 monitor, sus contraseñas ni la deshabilitación de admin; esos
 elementos deben reponerse al restaurar desde los exports.
 
+Al cerrar F2 se generaron los exports posteriores a la configuración
+de OSPF y VRRP de EDGE, CORE-1, CORE-2, DIST-1 y DIST-2, con nombres
+backup-<nodo>-2026-10-15.rsc. Los ISP no cambiaron en F2 y conservan
+su export del 09/10. Los exports incluyen las instancias OSPF, las
+interface-templates con `auth-key` MD5 en texto plano, y los grupos
+VRRP con `authentication=ah`. La contraseña de VRRP no aparece en el
+export, por lo que debe volver a cargarse al restaurar (clave de 1.3).
+
 Se creó en GNS3 el snapshot BASE con los nodos detenidos,
 después de configurar y verificar direccionamiento y hardening.
 El snapshot conserva el estado base del proyecto.
