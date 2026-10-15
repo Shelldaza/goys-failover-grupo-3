@@ -113,6 +113,26 @@ Los clientes DHCP preconfigurados en ether1 fueron deshabilitados.
 Las configuraciones de OSPF, VRRP y BGP quedan pendientes para
 F2 y F3. Los exports de la configuración base están en backups/.
 
+### 3.2 VRRP y OSPF — F2
+
+**OSPF.** Instancia `ospf-main` (v2) con área `backbone` (0.0.0.0) en
+EDGE, CORE-1, CORE-2, DIST-1 y DIST-2. El router-id de cada equipo es
+su loopback. Una única interface-template cubre `10.0.0.0/24`
+(`type=ptp`, MD5), por lo que incluye todos los enlaces /30 internos y
+el enlace core-core. Las loopbacks y las LAN de DIST se anuncian como
+pasivas. Los enlaces con los ISP quedan fuera de OSPF (BGP en F3).
+
+**VRRP.** Dos grupos en DIST-1 y DIST-2 con reparto de carga:
+
+| Grupo | VRID | Interfaz | IP virtual | MAC virtual | Master (prio 150) | Backup (prio 100) |
+|-------|:----:|:--------:|:----------:|:-----------:|:-----------------:|:-----------------:|
+| USERS | 10 | ether3 | `192.168.10.1` | `00:00:5E:00:01:0A` | DIST-1 | DIST-2 |
+| SERVERS | 20 | ether4 | `192.168.20.1` | `00:00:5E:00:01:14` | DIST-2 | DIST-1 |
+
+Los scripts aplicados están en `configs/`:
+`F2-edge.rsc`, `F2-core-1.rsc`, `F2-core-2.rsc`, `F2-dist-1.rsc`,
+`F2-dist-2.rsc`, `F2-vrrp-dist-1.rsc` y `F2-vrrp-dist-2.rsc`.
+
 ---
 
 ## 4. Verificación
@@ -130,6 +150,37 @@ en capturas/F1/.
 
 La conectividad entre redes y los simulacros de failover quedan
 pendientes para las fases posteriores.
+
+### 4.2 Verificación de F2
+
+**OSPF.** Los cinco routers muestran sus vecinos en estado Full
+sobre los enlaces /30, incluido el core-core. EDGE aprende por OSPF
+las redes internas, entre ellas las LAN 192.168.10.0/24 y
+192.168.20.0/24.
+
+![OSPF CORE-1](../capturas/F2/F2-ospf-CORE-1.png)
+![OSPF CORE-2](../capturas/F2/F2-ospf-CORE-2.png)
+![OSPF DIST-1](../capturas/F2/F2-ospf-DIST-1.png)
+![OSPF DIST-2](../capturas/F2/F2-ospf-DIST-2.png)
+![OSPF EDGE](../capturas/F2/F2-ospf-EDGE.png)
+![Rutas OSPF en EDGE](../capturas/F2/F2-ospf-rutas-EDGE.png)
+
+**VRRP.** `/interface vrrp print` muestra a DIST-1 como master del
+grupo 10 y a DIST-2 como master del grupo 20.
+
+![VRRP DIST-1](../capturas/F2/F2-vrrp-DIST-1.png)
+![VRRP DIST-2](../capturas/F2/F2-vrrp-DIST-2.png)
+
+**Capa 3.** PC-USER alcanza su gateway virtual (192.168.10.1), el
+gateway virtual de SERVERS y el host SRV. SRV alcanza su gateway
+virtual (su tabla ARP muestra la MAC virtual `00:00:5e:00:01:14`) y
+PC-USER. Con un ping continuo de PC-USER al gateway virtual se apagó
+el master del grupo 10: se perdieron pocos paquetes y el servicio se
+recuperó solo; al volver a encender DIST-1, recuperó el rol master.
+
+![L3 PC-USER](../capturas/F2/F2-l3-PC-USER.png)
+![L3 SRV](../capturas/F2/F2-l3-SRV.png)
+![Ping continuo con failover](../capturas/F2/F2-l3-ping-continuo.png)
 
 ---
 
@@ -155,6 +206,15 @@ direcciones se probaron en ISP-1.
 
 La autenticación de los protocolos de enrutamiento y el
 firewall de EDGE quedan pendientes para las fases posteriores.
+
+### 5.2 Autenticación de F2
+
+- **OSPF:** MD5 (`auth=md5`, `auth-id=1`) en todos los enlaces /30
+  internos, con la clave definida en 1.3.
+- **VRRP:** autenticación AH en ambos grupos, con la clave definida
+  en 1.3. RouterOS 7.16 requiere `version=2` para usar autenticación.
+
+La prueba con clave incorrecta se documentará en F4.
 
 
 ---
@@ -221,16 +281,16 @@ La prueba de restauración queda pendiente.
 
 ### Redes
 - [ ] 7 CHR + 2 switches + 2 hosts levantados y cableados
-- [ ] VRRP operativo (2 grupos, load-sharing)
-- [ ] OSPF área 0 con adyacencias (incluido core–core)
+- [x] VRRP operativo (2 grupos, load-sharing)
+- [x] OSPF área 0 con adyacencias (incluido core–core)
 - [ ] BGP eBGP ×2 establecido (multi-homing)
 - [ ] Los 5 drills ejecutados y documentados (runbook + post-mortem + tiempo)
 
 ### Seguridad
 - [ ] Hardening aplicado (password, usuario mínimo, servicios apagados)
-- [ ] OSPF MD5 funcionando
+- [x] OSPF MD5 funcionando
 - [ ] BGP TCP-MD5 funcionando
-- [ ] VRRP auth funcionando
+- [x] VRRP auth funcionando
 - [ ] Firewall edge aplicado
 - [ ] Prueba con clave incorrecta → debe **fallar** (documentado)
 
