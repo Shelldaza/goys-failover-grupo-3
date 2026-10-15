@@ -68,19 +68,19 @@
 ## Epic F2 — VRRP + OSPF · *vence vie 16/10*
 
 ### VRRP (2 grupos, load-sharing, auth)
-- [ ] [R4] configurar VRRP vrid 10 en DIST-1 (master)
-- [ ] [R4] configurar VRRP vrid 20 en DIST-2 (master)
-- [ ] [R4] activar auth simple en ambos grupos
-- [ ] [R5] verificar master/backup con `/interface vrrp print`
+- [x] [R4] configurar VRRP vrid 10 en DIST-1 (master)
+- [x] [R4] configurar VRRP vrid 20 en DIST-2 (master)
+- [x] [R4] activar auth AH (clave VRRP de F0) en ambos grupos
+- [x] [R5] verificar master/backup con `/interface vrrp print`
 
 ### OSPF área 0 (con MD5, incluido core–core)
-- [ ] [R3] Configurar instancias e interfaces OSPF en CORE-1, CORE-2, DIST y EDGE.
-- [ ] [R3] Habilitar autenticación OSPF MD5 en todos los enlaces /30 internos.
-- [ ] [R5] Verificar estado de adyacencias FULL y rutas dinámicas.
+- [x] [R3] Configurar instancias e interfaces OSPF en CORE-1, CORE-2, DIST y EDGE.
+- [x] [R3] Habilitar autenticación OSPF MD5 en todos los enlaces /30 internos.
+- [x] [R5] Verificar estado de adyacencias FULL y rutas dinámicas.
 
 ### Verificación L3 (ping intra-LAN + gateway virtual)
-- [ ] [R5] Ejecutar ping continuo de PC-USER a IP Virtual 192.168.10.1.
-- [ ] [R5] Probar ping de PC-USER a SRV para validar enrutamiento inter-VLAN.
+- [x] [R5] Ejecutar ping continuo de PC-USER a IP Virtual 192.168.10.1 (con failover y recuperación).
+- [x] [R5] Probar ping de PC-USER a SRV para validar enrutamiento inter-VLAN.
 
 ---
 
