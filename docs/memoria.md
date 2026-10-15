@@ -70,6 +70,7 @@
 
 - **Formato del change log** (convención de commits): Uso estricto de Conventional Commits (`tipo(alcance): descripción`). Cada cambio debe vincularse a un rol.
 - **Política de backup** (cuándo y cómo): Ejecución de `/export file=backup-<nodo>-<fecha>.rsc` e inclusión en el directorio `/backups` del repositorio tras la estabilización de cada Epic (F1, F2, F3).
+- **Restore drill:** al cerrar cada Epic con backup se prueba la restauración en un nodo: (1) `/export file=<nombre>` y registrar el estado de referencia; (2) `/system reset-configuration no-defaults=yes skip-backup=yes`; (3) `/import file-name=<nombre>.rsc`; (4) recrear usuarios `netadmin` y `monitor` y deshabilitar `admin`, porque el export no los incluye; (5) verificar direcciones, servicios y el protocolo de enrutamiento contra el estado de referencia.
 
 ---
 
@@ -278,7 +279,20 @@ El snapshot conserva el estado base del proyecto.
 
 ![Snapshot BASE](../capturas/F1/F1-snapshot-BASE.png)
 
-La prueba de restauración queda pendiente.
+**Prueba de restauración (restore drill).** El 15/10 se probó en CORE-1
+con el export `backup-CORE-1-2026-10-15.rsc`. Antes del reset tenía 4
+vecinos OSPF en estado Full. Se ejecutó
+`/system reset-configuration no-defaults=yes skip-backup=yes`; el
+router volvió sin configuración (identidad `MikroTik`) y el archivo
+`.rsc` se conservó en su memoria. Con `/import` la configuración se
+restauró sin errores. Quedaron pendientes los usuarios, que se
+recrearon a mano (`netadmin`, `monitor`, y `admin` deshabilitado).
+Tras la restauración CORE-1 recuperó sus 4 adyacencias OSPF en Full
+(la autenticación MD5 volvió porque la clave está en el export), las
+cinco direcciones IP y los servicios inseguros deshabilitados.
+
+![Restore CORE-1 - antes](../capturas/F2/F2-restore-CORE-1-antes.png)
+![Restore CORE-1 - después](../capturas/F2/F2-restore-CORE-1-despues.png)
 
 
 ### 6.3 Monitoreo
@@ -333,7 +347,7 @@ La prueba de restauración queda pendiente.
 
 ### Operación
 - [ ] Change log completo (refleja los commits del repo)
-- [ ] Backups con restore probado
+- [x] Backups con restore probado
 - [ ] Monitoreo habilitado y documentado
 - [ ] Runbook por drill + post-mortem global
 
