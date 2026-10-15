@@ -61,7 +61,7 @@
 - **Servicios que se deshabilitan:** Telnet, FTP, WWW, API, MAC-Telnet, MAC-Ping. 
 
 - Gestión permitida: La administración de los equipos se realizará a través de la Consola local del simulador GNS3 y mediante winbox (interfaz gráfica de MikroTik) habilitado en su puerto seguro por defecto.
-- **Claves de autenticación** (OSPF / BGP / VRRP): no se versionan en el repositorio. Cada protocolo usa una clave distinta, guardada fuera del repo y compartida entre los integrantes por un canal privado. En scripts y exports figuran como `<CLAVE_OSPF>`, `<CLAVE_BGP>`, `<CLAVE_VRRP>` o `REDACTED`. Las claves iniciales de F0 se publicaron por error en esta sección; se rotaron el 15/10/2026 y ya no están vigentes.
+- **Claves de autenticación** (OSPF / BGP / VRRP): no se versionan en el repositorio. Cada protocolo usa una clave distinta, guardada fuera del repo y compartida entre los integrantes por mensajería privada (WhatsApp, cifrada de extremo a extremo). En scripts y exports figuran como `<CLAVE_OSPF>`, `<CLAVE_BGP>`, `<CLAVE_VRRP>` o `REDACTED`. Las claves iniciales de F0 se publicaron por error en esta sección; se rotaron el 15/10/2026 y ya no están vigentes.
 
 ### 1.4 Política de operación
 
