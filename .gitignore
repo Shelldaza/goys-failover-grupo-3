@@ -1,0 +1,2 @@
+# Backups binarios de RouterOS: contienen usuarios y claves, no se versionan
+*.backup
