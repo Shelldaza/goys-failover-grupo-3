@@ -28,7 +28,7 @@ set ssh disabled=yes
 set api disabled=yes
 set api-ssl disabled=yes
 /routing ospf interface-template
-add area=backbone auth=md5 auth-id=1 auth-key=OspfGoys26! disabled=no networks=10.0.0.0/24 type=ptp
+add area=backbone auth=md5 auth-id=1 auth-key=REDACTED disabled=no networks=10.0.0.0/24 type=ptp
 add area=backbone disabled=no networks=4.4.4.4/32 passive
 /system identity
 set name=CORE-1
