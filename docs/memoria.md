@@ -67,6 +67,7 @@
 
 - **Formato del change log** (convención de commits): Uso estricto de Conventional Commits (`tipo(alcance): descripción`). Cada cambio debe vincularse a un rol.
 - **Política de backup** (cuándo y cómo): Ejecución de `/export file=backup-<nodo>-<fecha>.rsc` e inclusión en el directorio `/backups` del repositorio tras la estabilización de cada Epic (F1, F2, F3).
+- **Backup binario:** además del export `.rsc`, se genera `/system backup save name=backup-<nodo>-<fecha> password=<clave>`. Contiene usuarios y claves, por lo que se cifra con una clave guardada fuera del repositorio, permanece en la memoria de cada router y no se versiona (`*.backup` figura en `.gitignore`). La constancia es la captura de `/file print` en cada nodo. Se restaura con `/system backup load`.
 - **Restore drill:** al cerrar cada Epic con backup se prueba la restauración en un nodo: (1) `/export file=<nombre>` y registrar el estado de referencia; (2) `/system reset-configuration no-defaults=yes skip-backup=yes`; (3) `/import file-name=<nombre>.rsc`; (4) recrear usuarios `netadmin` y `monitor` y deshabilitar `admin`, y reponer las claves de OSPF y VRRP, porque el export no incluye los usuarios ni las claves; (5) verificar direcciones, servicios y el protocolo de enrutamiento contra el estado de referencia.
 
 ---
@@ -278,6 +279,23 @@ RouterOS exporta el `auth-key` de OSPF en texto plano, por lo que se
 reemplazó por `REDACTED` antes de versionar los archivos. La
 contraseña de VRRP no aparece en el export. Ambas claves deben
 reponerse al restaurar.
+
+**Backup binario.** El 15/10 se generó además el backup binario
+`.backup` de los siete routers, incluidos ISP-1 e ISP-2, cifrado con
+una clave que no se versiona. A diferencia del `.rsc`, incluye
+usuarios y claves. Los archivos permanecen en la memoria de cada
+router, porque los CHR no tienen IP de gestión desde la que
+extraerlos, y no se suben al repositorio. La constancia es el listado
+de archivos de cada nodo. La restauración desde `.backup` no se
+probó; el restore drill de más abajo usó el `.rsc`.
+
+![Backup binario EDGE](../capturas/F2/F2-backup-bin-EDGE.png)
+![Backup binario ISP-1](../capturas/F2/F2-backup-bin-ISP-1.png)
+![Backup binario ISP-2](../capturas/F2/F2-backup-bin-ISP-2.png)
+![Backup binario CORE-1](../capturas/F2/F2-backup-bin-CORE-1.png)
+![Backup binario CORE-2](../capturas/F2/F2-backup-bin-CORE-2.png)
+![Backup binario DIST-1](../capturas/F2/F2-backup-bin-DIST-1.png)
+![Backup binario DIST-2](../capturas/F2/F2-backup-bin-DIST-2.png)
 
 Se creó en GNS3 el snapshot BASE con los nodos detenidos,
 después de configurar y verificar direccionamiento y hardening.
