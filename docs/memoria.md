@@ -196,6 +196,13 @@ Se deshabilitaron Telnet, FTP, HTTP, HTTPS, SSH, API y API-SSL.
 Winbox por IP quedó habilitado. También se deshabilitaron
 MAC-Telnet, MAC-Winbox y MAC-Ping.
 
+El cliente DHCP que RouterOS trae preconfigurado en ether1 se
+deshabilitó explícitamente (`disabled=yes`) en los siete routers.
+Todo el direccionamiento del lab es estático: un cliente DHCP activo
+aceptaría una IP, una ruta por defecto y un DNS de cualquier servidor
+que responda en ese enlace, lo que contradice el IPAM y abre una vía
+de suplantación. Su estado queda registrado en los exports.
+
 En los ISP se conservaron activas únicamente las interfaces
 ether1. En EDGE, CORE y DIST se conservaron ether1 a ether4,
 deshabilitando las interfaces Ethernet restantes.
