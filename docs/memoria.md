@@ -61,16 +61,13 @@
 - **Servicios que se deshabilitan:** Telnet, FTP, WWW, API, MAC-Telnet, MAC-Ping. 
 
 - Gestión permitida: La administración de los equipos se realizará a través de la Consola local del simulador GNS3 y mediante winbox (interfaz gráfica de MikroTik) habilitado en su puerto seguro por defecto.
-- **Claves de autenticación** (OSPF / BGP / VRRP): 
-  - OSPF: `OspfGoys26!`
-  - BGP: `BgpGoys26!`
-  - VRRP: `VrrpGoys26!`
+- **Claves de autenticación** (OSPF / BGP / VRRP): no se versionan en el repositorio. Cada protocolo usa una clave distinta, guardada fuera del repo y compartida entre los integrantes por un canal privado. En scripts y exports figuran como `<CLAVE_OSPF>`, `<CLAVE_BGP>`, `<CLAVE_VRRP>` o `REDACTED`. Las claves iniciales de F0 se publicaron por error en esta sección; se rotaron el 15/10/2026 y ya no están vigentes.
 
 ### 1.4 Política de operación
 
 - **Formato del change log** (convención de commits): Uso estricto de Conventional Commits (`tipo(alcance): descripción`). Cada cambio debe vincularse a un rol.
 - **Política de backup** (cuándo y cómo): Ejecución de `/export file=backup-<nodo>-<fecha>.rsc` e inclusión en el directorio `/backups` del repositorio tras la estabilización de cada Epic (F1, F2, F3).
-- **Restore drill:** al cerrar cada Epic con backup se prueba la restauración en un nodo: (1) `/export file=<nombre>` y registrar el estado de referencia; (2) `/system reset-configuration no-defaults=yes skip-backup=yes`; (3) `/import file-name=<nombre>.rsc`; (4) recrear usuarios `netadmin` y `monitor` y deshabilitar `admin`, porque el export no los incluye; (5) verificar direcciones, servicios y el protocolo de enrutamiento contra el estado de referencia.
+- **Restore drill:** al cerrar cada Epic con backup se prueba la restauración en un nodo: (1) `/export file=<nombre>` y registrar el estado de referencia; (2) `/system reset-configuration no-defaults=yes skip-backup=yes`; (3) `/import file-name=<nombre>.rsc`; (4) recrear usuarios `netadmin` y `monitor` y deshabilitar `admin`, y reponer las claves de OSPF y VRRP, porque el export no incluye los usuarios ni las claves; (5) verificar direcciones, servicios y el protocolo de enrutamiento contra el estado de referencia.
 
 ---
 
@@ -213,9 +210,9 @@ firewall de EDGE quedan pendientes para las fases posteriores.
 ### 5.2 Autenticación de F2
 
 - **OSPF:** MD5 (`auth=md5`, `auth-id=1`) en todos los enlaces /30
-  internos, con la clave definida en 1.3.
-- **VRRP:** autenticación AH en ambos grupos, con la clave definida
-  en 1.3. RouterOS 7.16 requiere `version=2` para usar autenticación.
+  internos, con la clave vigente (ver 1.3).
+- **VRRP:** autenticación AH en ambos grupos, con la clave vigente
+  (ver 1.3). RouterOS 7.16 requiere `version=2` para usar autenticación.
 
 La prueba con clave incorrecta se documentará en F4.
 
@@ -269,9 +266,11 @@ Al cerrar F2 se generaron los exports posteriores a la configuración
 de OSPF y VRRP de EDGE, CORE-1, CORE-2, DIST-1 y DIST-2, con nombres
 backup-<nodo>-2026-10-15.rsc. Los ISP no cambiaron en F2 y conservan
 su export del 09/10. Los exports incluyen las instancias OSPF, las
-interface-templates con `auth-key` MD5 en texto plano, y los grupos
-VRRP con `authentication=ah`. La contraseña de VRRP no aparece en el
-export, por lo que debe volver a cargarse al restaurar (clave de 1.3).
+interface-templates MD5 y los grupos VRRP con `authentication=ah`.
+RouterOS exporta el `auth-key` de OSPF en texto plano, por lo que se
+reemplazó por `REDACTED` antes de versionar los archivos. La
+contraseña de VRRP no aparece en el export. Ambas claves deben
+reponerse al restaurar.
 
 Se creó en GNS3 el snapshot BASE con los nodos detenidos,
 después de configurar y verificar direccionamiento y hardening.
@@ -288,7 +287,8 @@ router volvió sin configuración (identidad `MikroTik`) y el archivo
 restauró sin errores. Quedaron pendientes los usuarios, que se
 recrearon a mano (`netadmin`, `monitor`, y `admin` deshabilitado).
 Tras la restauración CORE-1 recuperó sus 4 adyacencias OSPF en Full
-(la autenticación MD5 volvió porque la clave está en el export), las
+(la autenticación MD5 volvió porque ese export incluía la clave; los
+exports versionados la llevan censurada y debe reponerse), las
 cinco direcciones IP y los servicios inseguros deshabilitados.
 
 ![Restore CORE-1 - antes](../capturas/F2/F2-restore-CORE-1-antes.png)
