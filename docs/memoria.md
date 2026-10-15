@@ -24,6 +24,8 @@
 | 1 | Subredes solapadas en la capa de acceso. | Se asignó `192.168.10.0/24` para usuarios y `192.168.20.0/24` para servidores. | Previene asimetría de enrutamiento y permite la sumarización correcta de rutas en OSPF. |
 | 2 | Ausencia de enlace core-core. | Se agregó un enlace directo L3 (10.0.0.8/30) entre CORE-1 y CORE-2. | Evita la partición del backbone (área 0) y el descarte de tráfico ante la caída de enlaces cruzados. |
 | 3 | HSRP mal ubicado en el Core. | Se desplazó la redundancia de gateway (VRRP) a los switches DIST-1 y DIST-2. | Libera al Core para dedicarse exclusivamente al tránsito rápido de paquetes, ubicando las políticas L3 en Distribución. |
+| 4 | Firewall sin par HA (punto único de falla). | El filtrado se aplica en EDGE (F3) con un único equipo. Se documenta que en producción corresponde un par en failover activo/standby con sincronización de estado. | Con un solo equipo, su falla corta toda la salida a Internet. La doble conexión a ISP protege ante la caída de un proveedor, no ante la caída de EDGE: el lab lo acepta como limitación conocida. |
+| 5 | Route Reflector iBGP mal ubicado (atravesando el firewall). | Se eliminó el RR. EDGE mantiene dos sesiones eBGP, una por ISP, sin iBGP. | Con un único router de borde no hay otros speakers iBGP a los que reflejar rutas. Las políticas de BGP quedan en el edge, no a través del firewall. |
 
 ### 1.2 Plan de direccionamiento (IPAM)
 
