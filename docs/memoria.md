@@ -223,7 +223,34 @@ La prueba con clave incorrecta se documentará en F4.
 
 ### 6.1 Change log
 
-> *Nota: El registro de cambios se completará progresivamente, reflejando el historial estructurado de commits del repositorio Git a lo largo de las fases F1 a F5.*
+Registro de commits de `main` (orden cronológico). Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol.
+
+| Fase | Commit | Mensaje | Rol |
+|:----:|:------:|---------|:---:|
+| F0 | `0d14cd5` | chore: crear estructura inicial del proyecto | — |
+| F0 | `32ebfb0` | docs(backlog): inicializo backlog con tareas y roles para F0 | — |
+| F0 | `f90c412` | docs(backlog): inicializo backlog con tareas y roles para F0 | — |
+| F0 | `dc75ea5` | docs(memoria): inicializo planilla de memoria tecnica | — |
+| F0 | `edff198` | docs(diseño): completar IPAM, politicas de seguridad y backlog para fase F0 | — |
+| F0 | `bf0e5fc` | chore(merge): resolver conflictos sobrescribiendo main con diseño F0 | — |
+| F0 | `d69c615` | Merge pull request #1 from Shelldaza/docs/f0 | — |
+| F1 | `6fa5e60` | feat(backups): agregar archivos .rsc de exportacion hardening e IPAM para core-1, core-2, dist-1 y dist-2 | — |
+| F1 | `e0ed544` | docs(capturas): evidencias de despliegue de topologia, conectividad L3 y hardening para F1 | — |
+| F1 | `abb80e0` | docs(f1): agrego evidencias de edge proveedores hosts y snapshot BASE | — |
+| F1 | `1753f9c` | feet(backup): agregar exports F1 de edge y proveedores (tipo `feet` por `feat`) | — |
+| F1 | `2522bb2` | docs(f1): actualizo readme backlog y memoria con cierre de fase | — |
+| F2 | `6cb1dab` | feat(ospf): OSPF area 0 con MD5 en core-1 y core-2 | R3 |
+| F2 | `c8fea4c` | docs(capturas): evidencia OSPF core-core core-1 y core-2 | R5 |
+| F2 | `04fc6a3` | feat(ospf): OSPF area 0 con MD5 en EDGE, DIST-1 y DIST-2 | R3 |
+| F2 | `4b5ee96` | docs(capturas): evidencia OSPF en EDGE, DIST-1 y DIST-2 | R5 |
+| F2 | `764af58` | docs(capturas): actualizo evidencia OSPF de CORE-1 y CORE-2 con 4 vecinos | R5 |
+| F2 | `3b011a8` | feat(vrrp): vrid 10 master y vrid 20 backup con auth en DIST-1 | R4 |
+| F2 | `aee423a` | feat(vrrp): vrid 20 master y vrid 10 backup con auth en DIST-2 | R4 |
+| F2 | `60c572a` | docs(capturas): evidencias VRRP con auth y reparto de carga en DIST-1 y DIST-2 | R5 |
+| F2 | `32ba4a6` | docs(capturas): evidencia verificacion L3 PC-USER y SRV via VIP (rol escrito `[5]` por `[R5]`) | R5 |
+| F2 | `5d8e433` | docs(capturas): evidencia failover VRRP con ping continuo | R5 |
+| F2 | `6400ae6` | docs(backlog): marcar F2 (VRRP + OSPF + L3) como hecho | R5 |
+| F2 | `2562310` | docs(memoria): documentar configuracion, verificacion y seguridad de F2 | R5 |
 
 ### 6.2 Backups
 
