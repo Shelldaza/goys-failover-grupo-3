@@ -87,22 +87,36 @@
 ## Epic F3 — BGP + firewall · *vence vie 16/10*
 
 ### eBGP multi-homing (2 sesiones, TCP-MD5)
-- [ ] [R1] Levantar sesión BGP entre EDGE e ISP-1.
-- [ ] [R1] Levantar sesión BGP entre EDGE e ISP-2.
-- [ ] [R2] Aplicar contraseña TCP-MD5 y confirmar estado `established`.
+- [x] [R1] Levantar sesión BGP entre EDGE e ISP-1.
+- [x] [R1] Levantar sesión BGP entre EDGE e ISP-2.
+- [x] [R2] Aplicar contraseña TCP-MD5 y confirmar ambas sesiones en estado established.
+- [x] [R1] Definir ISP-1 como salida preferida mediante local-pref 200 e ISP-2 como alternativa con local-pref 100.
+- [x] [R1] Eliminar las conexiones BGP duplicadas y comprobar que las dos sesiones siguen establecidas.
 
 ### Redistribución OSPF→BGP
-- [ ] [R1] Inyectar rutas LAN aprendidas por OSPF hacia BGP.
-- [ ] [R2] Comprobar en tabla de ISP que conocen 192.168.10.0/24 y 20.0/24.
+- [x] [R1] Redistribuir las rutas OSPF hacia BGP, filtrando la salida para anunciar únicamente 192.168.10.0/24 y 192.168.20.0/24.
+- [x] [R2] Comprobar que ambos ISP aprenden las dos LAN por BGP.
+- [x] [R2] Anunciar desde cada ISP su loopback y una ruta por defecto.
+- [x] [R1] Anunciar la ruta por defecto hacia el dominio OSPF mediante originate-default=if-installed.
+- [x] [R5] Verificar que DIST-1 y DIST-2 reciben la ruta por defecto mediante OSPF.
 
 ### Salida a "Internet" (host → loopback ISP)
-- [ ] [R5] Hacer traceroute desde PC-USER a la Loopback del ISP-1.
+- [x] [R5] Verificar ping desde PC-USER a las loopbacks de ambos ISP.
+- [x] [R5] Ejecutar traceroute desde PC-USER a 2.2.2.2 y 3.3.3.3.
+- [x] [R5] Repetir las pruebas de conectividad después de aplicar el firewall.
 
 ### Firewall edge (filtro + plano de gestión)
-- [ ] [R1] Configurar regla input drop en EDGE (permitiendo solo gestión).
-- [ ] [R1] Configurar masquerade (NAT) si aplica.
+- [x] [R1] Configurar reglas input que permitan conexiones establecidas y relacionadas, BGP de los ISP, OSPF de los CORE, ICMP y gestión autorizada, con descarte final.
+- [x] [R1] Restringir Winbox a 192.168.10.100/32 mediante el servicio y el firewall.
+- [x] [R1] Configurar reglas forward para permitir la salida de las LAN y el tráfico de respuesta, con descarte final.
+- [x] [R1] Evaluar NAT y documentar que no aplica: ambos ISP conocen las LAN mediante BGP.
+- [x] [R5] Verificar bloqueo de TCP/8291 desde ISP-1 mediante timeout y contadores del firewall.
 
----
+### Evidencias y respaldos
+- [x] [R5] Guardar las capturas de configuración y verificación en capturas/F3/.
+- [x] [R5] Generar los exports finales de EDGE, ISP-1 e ISP-2 y censurar las claves en las copias para Git.
+- [x] [R5] Generar y documentar los backups binarios cifrados posteriores a F3.
+- [x] [R5] Ejecutar y documentar una prueba de restauración posterior a F3 conforme a la política de operación.
 
 ## Epic F4 — Drills + monitoreo · *vence mar 20/10*
 
