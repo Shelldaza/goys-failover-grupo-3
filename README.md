@@ -1,29 +1,50 @@
-# Failover Routing 
+# Failover Routing
 
 ## Materia
+
 Gestión Operativa y Seguridad en Redes (GOYS) — UTN FRLP
 
 ## Proyecto
-Laboratorio grupal de Failover Routing.
 
-## Integrantes
-- Daza, Facundo.
-- Hiriart, Irineo.
+Laboratorio grupal de una red empresarial de cinco capas en GNS3,
+con redundancia de gateway mediante VRRP, enrutamiento interno
+OSPF y dos proveedores conectados mediante eBGP.
 
-## Etapa anterior 
-F0 — Diseño y gestión de cambio
+## Integrantes y roles
 
-## Etapa actual completada en detalle
-F1 — Topología, hardening y backup completados.
+| Integrante | Responsabilidades |
+|------------|-------------------|
+| Facundo Daza | R1: Edge-WAN; R2: Proveedores; R5: QA/Ops en F1 y F3. |
+| Irineo Hiriart | R3: Core; R4: Distribución; R5: QA/Ops en F2 y F4. |
 
-- 7 CHR, 2 switches y 2 hosts conectados mediante 15 enlaces.
-- Direccionamiento y loopbacks configurados.
-- Conectividad entre vecinos directos verificada.
-- Hardening aplicado en los siete routers.
-- Siete exports disponibles en backups/.
-- Snapshot BASE creado y documentado.
-- Evidencias disponibles en capturas/F1/.
+## Estado del proyecto
 
-## Próxima etapa 
+F0, F1, F2 y F3 completadas.
 
-F2 — VRRP y OSPF.
+| Fase | Resultado |
+|------|-----------|
+| F0 — Diseño | IPAM, corrección del diagrama, políticas y repositorio. |
+| F1 — Topología y hardening | 7 CHR, 2 switches y 2 hosts conectados mediante 15 enlaces; IP y loopbacks configuradas. hardening, exports y snapshot BASE documentados. |
+| F2 — VRRP y OSPF | Dos grupos VRRP con reparto de carga y autenticación. OSPF área 0 con MD5, incluido core-core. conectividad entre LAN verificada. |
+| F3 — BGP y firewall | Dos sesiones eBGP con TCP-MD5; anuncios de las LAN filtrados; salida hacia loopbacks de ambos ISP; firewall y gestión restringida en EDGE. |
+
+Se documentaron backups binarios cifrados y pruebas de restauración
+desde exports: CORE-1 durante F2 e ISP-2 durante F3.
+
+
+## Documentación y archivos
+
+- `docs/memoria.md`: diseño, configuración, verificaciones y change log.
+- `backlog.md`: tareas, responsables y estados.
+- `configs/`: scripts y configuraciones por router y fase.
+- `backups/`: exports fechados con claves censuradas.
+- `capturas/`: evidencias organizadas por fase.
+- `runbooks/`: procedimientos de los drills, pendientes para F4.
+
+Los exports completos no deben importarse sobre equipos ya configurados
+sin revisar previamente el procedimiento de restauración.
+
+## Próximas etapas
+
+- F4 — Drills y monitoreo: martes 20/10/2026.
+- F5 — Memoria final y defensa: viernes 23/10/2026.
