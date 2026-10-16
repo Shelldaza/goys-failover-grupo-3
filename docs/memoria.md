@@ -252,9 +252,9 @@ La conectividad entre redes se verificó posteriormente en F2.
 
 **OSPF.** Se documentaron vecinos en estado Full sobre los enlaces /30 internos, incluido el core-core. EDGE aprendió por OSPF las redes internas, entre ellas `192.168.10.0/24` y `192.168.20.0/24`.
 
-![OSPF CORE-1](../capturas/F2/F2-ospf-CORE-1.png)
+![OSPF CORE-1](../capturas/F2/F2-ospf-core-1.png)
 
-![OSPF CORE-2](../capturas/F2/F2-ospf-CORE-2.png)
+![OSPF CORE-2](../capturas/F2/F2-ospf-core-2.png)
 
 ![OSPF DIST-1](../capturas/F2/F2-ospf-DIST-1.png)
 
@@ -387,7 +387,7 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `1baf9f0`, en orden cronológico.
+Registro de commits de `main` hasta `b15c5c8`, en orden cronológico.
 El commit de esta actualización documental se incorporará en la
 siguiente actualización del registro.
 
@@ -445,6 +445,7 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-16 | F3 | `a47d148` | Facundo Daza | fix(backups): completo exports post-F3 de proveedores que quedaron vacios | Corrige los archivos vacíos de ISP-1 e ISP-2 incorporados en ce154b4. Revertirlo dejaría nuevamente esos respaldos vacíos; no modifica routers. |
 | 2026-10-16 | F3 | `4e66f19` | Facundo Daza | feat(configs): agrego configuraciones completas post-F3 de EDGE y proveedores | Agrega exports completos en configs/. Revertirlo elimina esas copias, sin modificar routers. |
 | 2026-10-16 | F3 | `1baf9f0` | Facundo Daza | docs(f3): actualizo memoria backlog y change log con cierre de fase | `git revert`; revierte la actualización documental, sin modificar los routers. |
+| 2026-10-16 | F3 | `b15c5c8` | Facundo Daza | docs(readme): actualizo estado hasta F3 y registro el cierre documental [R5] | `git revert`; revierte cambios documentales, sin modificar los routers. |
 
 
 ### 6.2 Backups
