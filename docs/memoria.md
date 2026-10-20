@@ -431,12 +431,12 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `b15c5c8`, en orden cronológico.
+Registro de commits de `main` hasta `45c835f`, en orden cronológico.
 El commit de esta actualización documental se incorporará en la
 siguiente actualización del registro.
 
 La columna Responsable corresponde al autor registrado en Git.
-Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol.
+Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol. Los dos commits del Drill 1 llevan la etiqueta `[5]` en lugar de `[R5]`.
 
 Para commits ordinarios, `git revert <hash>` crea un commit inverso
 sin reescribir el historial. Los commits de merge requieren seleccionar
@@ -490,6 +490,25 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-16 | F3 | `4e66f19` | Facundo Daza | feat(configs): agrego configuraciones completas post-F3 de EDGE y proveedores | Agrega exports completos en configs/. Revertirlo elimina esas copias, sin modificar routers. |
 | 2026-10-16 | F3 | `1baf9f0` | Facundo Daza | docs(f3): actualizo memoria backlog y change log con cierre de fase | `git revert`; revierte la actualización documental, sin modificar los routers. |
 | 2026-10-16 | F3 | `b15c5c8` | Facundo Daza | docs(readme): actualizo estado hasta F3 y registro el cierre documental [R5] | `git revert`; revierte cambios documentales, sin modificar los routers. |
+| 2026-10-16 | F3 | `42a081c` | Facundo Daza | docs(memoria): corrijo enlace de imagen y actualizo change log [R5] | `git revert`; revierte cambios documentales, sin modificar los routers. |
+| 2026-10-19 | F4 | `396e057` | Irineo Hiriart | docs(capturas): evidencia Drill 1 VRRP [5] | Rol escrito `[5]` por `[R5]`. Solo agrega evidencias. |
+| 2026-10-19 | F4 | `450b601` | Irineo Hiriart | docs(runbooks): runbook y tiempos del Drill 1 VRRP [5] | Rol escrito `[5]` por `[R5]`. `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `35dc6f2` | Irineo Hiriart | docs(capturas): evidencia Drill 2 OSPF [R5] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `5e30d15` | Irineo Hiriart | docs(runbooks): runbook y tiempos del Drill 2 OSPF [R5] | `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `608c4d3` | Irineo Hiriart | docs(capturas): evidencia Drill 3 BGP [R5] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `1931d68` | Irineo Hiriart | docs(runbooks): corrijo atribucion del mecanismo de deteccion del Drill 2 [R5] | Corrige una afirmación de `5e30d15`. Revertirlo reintroduce la atribución incorrecta. |
+| 2026-10-20 | F4 | `47062a4` | Irineo Hiriart | docs(runbooks): runbook y tiempos del Drill 3 BGP [R5] | `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `8f63edd` | Irineo Hiriart | docs(capturas): evidencia Drill 4 check-gateway [R5] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `6326396` | Irineo Hiriart | docs(runbooks): runbook y tiempos del Drill 4 check-gateway [R5] | `git revert`; la ruta de prueba 9.9.9.9/32 se eliminó del router al terminar el drill. |
+| 2026-10-20 | F4 | `540be92` | Irineo Hiriart | docs(capturas): evidencia Drill 5 load-sharing VRRP [R5] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `cb3c927` | Irineo Hiriart | docs(runbooks): runbook del Drill 5 load-sharing VRRP [R5] | `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `48c5600` | Irineo Hiriart | docs(capturas): evidencia verificacion de seguridad OSPF MD5 [R3] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `f85c144` | Irineo Hiriart | docs(runbooks): verificacion de clave MD5 incorrecta en OSPF [R3] | `git revert`; la clave real de CORE-1 se restauró en el router al terminar la prueba. |
+| 2026-10-20 | F4 | `a3a24b4` | Irineo Hiriart | docs(capturas): evidencia monitoreo Netwatch [R4] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `bcdfec3` | Irineo Hiriart | docs(runbooks): monitoreo con Netwatch y tablas de ruteo [R4] | `git revert`; no modifica routers. Para quitar los chequeos de DIST-1: `/tool netwatch remove [find comment="F4 monitoreo"]`. |
+| 2026-10-20 | F4 | `7e27594` | Irineo Hiriart | docs(runbooks): post-mortem global de los drills de F4 [R5] | `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `1d30899` | Irineo Hiriart | docs(memoria): documentar drills, seguridad y monitoreo de F4 [R5] | `git revert`; revierte la documentación de F4, sin modificar los routers. |
+| 2026-10-20 | F4 | `45c835f` | Irineo Hiriart | docs(backlog): cerrar F4 y actualizar estado del proyecto [R5] | `git revert`; no modifica routers. |
 
 
 ### 6.2 Backups
