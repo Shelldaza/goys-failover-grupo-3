@@ -19,7 +19,7 @@ OSPF y dos proveedores conectados mediante eBGP.
 
 ## Estado del proyecto
 
-F0, F1, F2 y F3 completadas.
+F0, F1, F2, F3 y F4 completadas.
 
 | Fase | Resultado |
 |------|-----------|
@@ -27,6 +27,7 @@ F0, F1, F2 y F3 completadas.
 | F1 — Topología y hardening | 7 CHR, 2 switches y 2 hosts conectados mediante 15 enlaces; IP y loopbacks configuradas. hardening, exports y snapshot BASE documentados. |
 | F2 — VRRP y OSPF | Dos grupos VRRP con reparto de carga y autenticación. OSPF área 0 con MD5, incluido core-core. conectividad entre LAN verificada. |
 | F3 — BGP y firewall | Dos sesiones eBGP con TCP-MD5; anuncios de las LAN filtrados; salida hacia loopbacks de ambos ISP; firewall y gestión restringida en EDGE. |
+| F4 — Drills y monitoreo | Cinco drills con runbook y tiempos medidos, post-mortem global, prueba de clave OSPF incorrecta y chequeos con Netwatch. |
 
 Se documentaron backups binarios cifrados y pruebas de restauración
 desde exports: CORE-1 durante F2 e ISP-2 durante F3.
@@ -39,12 +40,11 @@ desde exports: CORE-1 durante F2 e ISP-2 durante F3.
 - `configs/`: scripts y configuraciones por router y fase.
 - `backups/`: exports fechados con claves censuradas.
 - `capturas/`: evidencias organizadas por fase.
-- `runbooks/`: procedimientos de los drills, pendientes para F4.
+- `runbooks/`: un runbook por drill, verificación de seguridad, monitoreo y post-mortem global.
 
 Los exports completos no deben importarse sobre equipos ya configurados
 sin revisar previamente el procedimiento de restauración.
 
 ## Próximas etapas
 
-- F4 — Drills y monitoreo: martes 20/10/2026.
 - F5 — Memoria final y defensa: viernes 23/10/2026.

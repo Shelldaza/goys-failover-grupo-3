@@ -121,16 +121,19 @@
 ## Epic F4 — Drills + monitoreo · *vence mar 20/10*
 
 ### Los 5 drills (runbook + post-mortem + tiempo)
-- [ ] [R5] Ejecutar Drill 1 (apagar DIST-1) y registrar convergencia VRRP.
-- [ ] [R5] Ejecutar Drill 2 (desconectar enlace CORE-1/DIST) y medir OSPF.
-- [ ] [R5] Ejecutar Drill 3 (apagar enlace ISP-1) y medir BGP.
-- [ ] [R5] Redactar post-mortem de los simulacros.
+- [x] [R5] Ejecutar Drill 1 (apagar DIST-1) y registrar convergencia VRRP.
+- [x] [R5] Ejecutar Drill 2 (desconectar enlace CORE/DIST) y medir OSPF.
+- [x] [R5] Ejecutar Drill 3 (apagar enlace ISP-1) y medir BGP.
+- [x] [R5] Ejecutar Drill 4 (check-gateway, failover estático) y medir.
+- [x] [R5] Ejecutar Drill 5 (load-sharing VRRP) y documentar ambos DIST activos.
+- [x] [R5] Redactar post-mortem global de los simulacros.
 
 ### Monitoreo (SNMP/chequeos)
-- [ ] [R4] Documentar tablas `/routing/route/print`.
+- [x] [R4] Habilitar chequeos Netwatch en DIST-1 y documentarlos.
+- [x] [R4] Documentar tablas `/routing route print`.
 
 ### Verificación de seguridad (clave incorrecta falla)
-- [ ] [R3] Cambiar intencionalmente clave MD5 en CORE-1 y documentar caída de OSPF.
+- [x] [R3] Cambiar intencionalmente clave MD5 en CORE-1 y documentar caída de OSPF.
 
 ---
 
