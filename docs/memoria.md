@@ -431,7 +431,7 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `45c835f`, en orden cronológico.
+Registro de commits de `main` hasta `6933b0c`, en orden cronológico.
 El commit de esta actualización documental se incorporará en la
 siguiente actualización del registro.
 
@@ -509,6 +509,10 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-20 | F4 | `7e27594` | Irineo Hiriart | docs(runbooks): post-mortem global de los drills de F4 [R5] | `git revert`; no modifica routers. |
 | 2026-10-20 | F4 | `1d30899` | Irineo Hiriart | docs(memoria): documentar drills, seguridad y monitoreo de F4 [R5] | `git revert`; revierte la documentación de F4, sin modificar los routers. |
 | 2026-10-20 | F4 | `45c835f` | Irineo Hiriart | docs(backlog): cerrar F4 y actualizar estado del proyecto [R5] | `git revert`; no modifica routers. |
+| 2026-10-20 | F4 | `73146dd` | Irineo Hiriart | docs(memoria): completar change log con los commits de F4 [R5] | `git revert`; revierte la actualización documental, sin modificar los routers. |
+| 2026-10-20 | F4 | `48ff457` | Irineo Hiriart | docs(capturas): evidencia backup binario DIST-1 [R5] | Solo agrega evidencias. |
+| 2026-10-20 | F4 | `40b36b4` | Irineo Hiriart | ops(backups): backup post-F4 de DIST-1 con Netwatch y clave censurada [R5] | Solo agrega un archivo; revertirlo no modifica el router. |
+| 2026-10-20 | F4 | `6933b0c` | Irineo Hiriart | docs(memoria): documentar export y backup binario de F4 y completar change log [R5] | `git revert`; revierte la actualización documental, sin modificar los routers. |
 
 
 ### 6.2 Backups
