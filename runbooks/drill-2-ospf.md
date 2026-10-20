@@ -38,7 +38,7 @@ No requiere intervención manual. OSPF elimina la adyacencia y recalcula SPF: el
 | Recuperación | Adyacencia OSPF DIST-1↔CORE-2 | `Full` a los 2 s de habilitar la interfaz |
 | Recuperación | Paquetes perdidos | 1 (`icmp_seq=32`) |
 
-La pérdida de un solo paquete es incompatible con esperar el dead timer (40 s): la caída se detectó a nivel de interfaz.
+La pérdida de un solo paquete indica que este flujo no esperó el dead timer (40 s). No se midió qué mecanismo disparó la detección (en el Drill 3, un corte remoto equivalente no fue detectado por BGP hasta vencer el hold-time).
 
 ## 6. Post-mortem
 
@@ -46,7 +46,7 @@ La pérdida de un solo paquete es incompatible con esperar el dead timer (40 s):
 - **Causa raíz:** deshabilitación intencional de ether2 en DIST-1 (drill).
 - **Qué funcionó:** redundancia ECMP entre CORE-1 y CORE-2, reconvergencia OSPF automática con autenticación MD5 activa y retorno a ECMP al restaurar el enlace.
 - **Observación:** la pérdida en la recuperación se produce con el enlace ya funcionando; hipótesis, no medida: rebalanceo del flujo ECMP al volver la segunda ruta.
-- **Riesgo residual:** sin BFD, una falla que no baje la interfaz (p. ej. falla del vecino sin caída de link) se detectaría recién por el dead timer (40 s).
+- **Riesgo residual:** sin BFD, una falla que no baje la interfaz se detectaría recién por el dead timer (40 s), como ocurrió con el hold-time en el Drill 3.
 - **Mejora posible:** habilitar BFD para detección sub-segundo en caídas sin pérdida de carrier.
 
 ## 7. Evidencias
