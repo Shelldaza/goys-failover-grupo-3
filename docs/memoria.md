@@ -642,6 +642,18 @@ La prueba verificó la restauración desde el export textual `.rsc`, con reposic
 
 Mantener los backups binarios únicamente dentro de los routers constituye una limitación: no protege frente a la pérdida del almacenamiento del proyecto.
 
+#### Exports y backup binario de F4
+
+Durante F4 solo DIST-1 recibió un cambio de configuración: los cinco chequeos de Netwatch de la sección 6.3. La ruta de prueba agregada en EDGE para el Drill 4 se eliminó al terminar, y la clave OSPF de CORE-1 se restauró después de la verificación de seguridad, por lo que ambos routers conservan sus configuraciones anteriores.
+
+El 20/10/2026 se generó el export `backup-DIST-1-2026-10-20.rsc`, guardado en `backups/`. La clave OSPF visible en el export se reemplazó por `REDACTED` en la copia destinada al repositorio. Se verificó que `dhcp-client` figura con `disabled=yes`. Respecto del export de F2, el único cambio es el bloque `/tool netwatch`.
+
+También se generó un backup binario cifrado de DIST-1 (`backup-DIST-1-2026-10-20.backup`, 23,5 KiB). Se cifró con una contraseña guardada fuera del repositorio, permanece en el almacenamiento del router y no se versiona. Su existencia se comprobó con `/file print`.
+
+![Backup binario DIST-1 de F4](../capturas/F4/F4-backup-DIST-1.png)
+
+No se realizó una prueba de restauración posterior a F4; la última corresponde a F3 (ISP-2). Se mantiene la limitación de que los backups binarios solo residen en los routers.
+
 ### 6.3 Monitoreo
 
 Se implementaron chequeos activos con Netwatch en DIST-1, con intervalo de 10 s y registro de cada cambio de estado en el log. No se habilitó SNMP: el laboratorio no dispone de un cliente SNMP para verificarlo y la comunidad sería un secreto adicional fuera del repositorio.
@@ -744,6 +756,7 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 - [x] Restauración desde export probada en CORE-1 durante F2.
 - [x] Backups binarios cifrados de F2 documentados.
 - [x] Backups binarios posteriores a F3 generados y documentados.
+- [x] Export y backup binario de DIST-1 posteriores a F4 generados y documentados.
 - [x] Restauración de un nodo con configuración posterior a F3 probada.
 - [x] Monitoreo habilitado y documentado.
 - [x] Runbook por drill y post-mortem global.
