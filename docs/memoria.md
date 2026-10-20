@@ -340,7 +340,51 @@ Se registró el contador de la regla final de descarte antes y después de la pr
 
 ![Contador después](../capturas/F3/F3-bloqueo-contador-despues.png)
 
-La prueba de caída de proveedor y la medición de convergencia permanecen pendientes para F4.
+La prueba de caída de proveedor y la medición de convergencia se documentan en la sección 4.4 (F4).
+
+### 4.4 Drills de failover, seguridad y monitoreo (F4)
+
+Cada drill tiene su runbook en `runbooks/` con detección, respuesta, recuperación, tiempo medido y post-mortem. El análisis global está en `runbooks/post-mortem-global.md`. Los drills 4 y 5 corresponden a los escenarios de la plantilla de documentación de la cátedra.
+
+| Drill | Escenario | Tiempo medido | Runbook |
+|-------|-----------|---------------|---------|
+| 1 — VRRP | Apagado de DIST-1 (master vrid 10) | ≈ 2,8 s (±1 s); 1 paquete perdido. Failback sin pérdida. | `runbooks/drill-1-vrrp.md` |
+| 2 — OSPF | `ether2` de DIST-1 deshabilitada (enlace a CORE-2) | 1 paquete perdido (< 1 s); adyacencia `Full` a los 2 s de restaurar | `runbooks/drill-2-ospf.md` |
+| 3 — BGP | `ether1` de ISP-1 deshabilitada | ≈ 129 s hasta Hold Timer Expired; sesión restablecida en ≈ 3 s | `runbooks/drill-3-bgp.md` |
+| 4 — check-gateway | Mismo corte con ruta estática de prueba | ≈ 28 s de detección; ≈ 10 s de vuelta | `runbooks/drill-4-check-gateway.md` |
+| 5 — Load-sharing VRRP | Sin falla: ambos DIST activos | No aplica | `runbooks/drill-5-load-sharing-vrrp.md` |
+
+**Drill 1.** DIST-2 asumió ambos grupos VRRP; al volver DIST-1 recuperó vrid 10 por preemption.
+
+![Drill 1: ping durante la falla](../capturas/F4/F4-drill1-falla-PC-USER.png)
+
+**Drill 2.** Se perdió un paquete en el corte y otro en la recuperación; el default de DIST-1 pasó de dos rutas ECMP a una y volvió a dos.
+
+![Drill 2: ping durante la falla](../capturas/F4/F4-drill2-falla-PC-USER.png)
+
+**Drill 3.** EDGE mantuvo el default por ISP-1 sobre un enlace muerto hasta vencer el hold-time (03:29:20), momento en que pasó a ISP-2. 2.2.2.2 solo es alcanzable por ISP-1, por lo que el failover se verifica por el cambio del default.
+
+![Drill 3: log BGP en EDGE](../capturas/F4/F4-drill3-falla-log-EDGE.png)
+
+**Drill 4.** Con una ruta de prueba (9.9.9.9/32, eliminada al terminar) y `check-gateway=ping`, EDGE pasó al gateway de respaldo en ≈ 28 s, frente a ≈ 129 s de BGP.
+
+![Drill 4: cambio de gateway activo](../capturas/F4/F4-drill4-falla-EDGE.png)
+
+**Drill 5.** DIST-1 es master de vrid 10 y DIST-2 de vrid 20 de forma simultánea; cada host usa la VIP de su grupo.
+
+![Drill 5: DIST-1](../capturas/F4/F4-drill5-DIST-1.png)
+
+![Drill 5: DIST-2](../capturas/F4/F4-drill5-DIST-2.png)
+
+#### Verificación de seguridad: clave OSPF MD5 incorrecta
+
+Se cambió la clave del template OSPF de CORE-1 (que cubre todos sus enlaces internos) por una clave de prueba. CORE-2 registró `authentication failed ... md5 mismatch` desde las 04:42:52 y la adyacencia con CORE-1 pasó a `Down` a las 04:43:22. Al restaurar la clave real, las cuatro adyacencias de CORE-1 se reconstruyeron. Detalle en `runbooks/verificacion-seguridad-ospf-md5.md`. La prueba se realizó solo con OSPF; no se repitió con BGP ni con VRRP.
+
+![Log de CORE-2 con rechazo MD5](../capturas/F4/F4-seguridad-log-CORE-2.png)
+
+#### Limitaciones de la medición
+
+Los pings de VPCS tienen resolución de ≈ 1 s y los relojes de los routers difieren en pocos segundos, por lo que los tiempos son aproximados. El detalle está en el post-mortem global.
 
 ---
 
@@ -365,7 +409,7 @@ La autenticación de los protocolos y el firewall se incorporaron en F2 y F3.
 - **OSPF:** MD5, con `auth=md5` y `auth-id=1`, en todos los enlaces /30 internos.
 - **VRRP:** autenticación AH en ambos grupos, utilizando VRRPv2 en RouterOS 7.16.
 
-Las claves vigentes se manejan conforme a la sección 1.3. La prueba con clave incorrecta se documentará en F4.
+Las claves vigentes se manejan conforme a la sección 1.3. La prueba con clave incorrecta se documenta en la sección 4.4.
 
 ### 5.3 Seguridad de F3
 
@@ -379,7 +423,7 @@ Winbox queda restringido a `192.168.10.100/32` tanto en el servicio como en la c
 
 La autorización de Winbox desde PC-USER se comprobó mediante la configuración. No se realizó una sesión gráfica desde ese host, que es un VPCS. La administración efectiva durante F3 se realizó mediante la consola de GNS3.
 
-La prueba de bloqueo de gestión no sustituye la prueba de autenticación con clave incorrecta prevista para F4.
+La prueba de bloqueo de gestión no sustituye la prueba de autenticación con clave incorrecta, que se realizó en F4 sobre OSPF (sección 4.4).
 
 ---
 
@@ -581,7 +625,27 @@ Mantener los backups binarios únicamente dentro de los routers constituye una l
 
 ### 6.3 Monitoreo
 
-La configuración y los resultados del monitoreo continuo, mediante SNMP y chequeos de estado, se incorporarán durante F4.
+Se implementaron chequeos activos con Netwatch en DIST-1, con intervalo de 10 s y registro de cada cambio de estado en el log. No se habilitó SNMP: el laboratorio no dispone de un cliente SNMP para verificarlo y la comunidad sería un secreto adicional fuera del repositorio.
+
+| Chequeo | Destino | Qué verifica |
+|---------|---------|--------------|
+| ISP-1-lo | 2.2.2.2 | Camino completo hasta el loopback de ISP-1 |
+| ISP-2-lo | 3.3.3.3 | Camino completo hasta el loopback de ISP-2 |
+| SRV | 192.168.20.100 | LAN de servidores |
+| CORE-1 | 10.0.0.13 | Enlace DIST-1 ↔ CORE-1 |
+| CORE-2 | 10.0.0.21 | Enlace DIST-1 ↔ CORE-2 |
+
+Los chequeos hacia los ISP quedaron inicialmente en `down` sin falla real: los ISP no tienen ruta hacia 10.0.0.0/24 porque EDGE solo anuncia las LAN. Se corrigió fijando `src-address=192.168.10.2`.
+
+Prueba: al deshabilitar `ether1` de ISP-1, `ISP-1-lo` pasó a `down` en ≈ 8 s y volvió a `up` ≈ 10 s después de restaurarlo; los otros cuatro chequeos no cambiaron. Las tablas de ruteo de DIST-1 se documentaron con `/routing route print`. Detalle en `runbooks/monitoreo-netwatch.md`.
+
+![Netwatch: ISP-1 caído](../capturas/F4/F4-monitoreo-down-DIST-1.png)
+
+![Netwatch: recuperación](../capturas/F4/F4-monitoreo-up-DIST-1.png)
+
+![Tabla de rutas de DIST-1](../capturas/F4/F4-monitoreo-rutas-DIST-1.png)
+
+Limitaciones: monitoreo local en un solo router, sin alertas externas ni métricas históricas. Los chequeos de Netwatch existen solo en la configuración activa de DIST-1 y no figuran en los exports anteriores a F4.
 
 ---
 
@@ -594,8 +658,7 @@ Las evidencias están organizadas por fase:
 | `capturas/F1/` | Topología, direccionamiento, hardening, acceso de monitor, pings directos y snapshot BASE. |
 | `capturas/F2/` | OSPF, VRRP, conectividad entre LAN, comprobación funcional de failover, backups binarios y restauración de CORE-1. |
 | `capturas/F3/` | Sesiones BGP, comprobación de TCP-MD5 sin revelar claves, rutas, salida por OSPF, pings, traceroutes y firewall. |
-
-Las capturas de F4 se incorporarán al ejecutar los drills y el monitoreo.
+| `capturas/F4/` | Drills 1 a 5, verificación de clave OSPF MD5 incorrecta y monitoreo con Netwatch. Prefijos `F4-drillN-`, `F4-seguridad-` y `F4-monitoreo-`. |
 
 Los nombres de archivos deben coincidir con los enlaces utilizados en esta memoria. Las imágenes no deben mostrar claves vigentes.
 
@@ -603,9 +666,9 @@ Los nombres de archivos deben coincidir con los enlaces utilizados en esta memor
 
 ## 8. Conclusiones y lecciones aprendidas
 
-El análisis global, los post-mortem y las conclusiones técnicas sobre la resiliencia de la arquitectura se completarán en F5, después de ejecutar los drills de F4.
+El post-mortem global de los drills está en `runbooks/post-mortem-global.md`. Las conclusiones finales sobre la resiliencia de la arquitectura se completan en F5.
 
-Hasta F3 se verificó el funcionamiento integrado de VRRP, OSPF, eBGP y el firewall de EDGE. Esta verificación funcional no demuestra todavía los tiempos de convergencia ni el cumplimiento de los cinco escenarios de falla requeridos.
+Hasta F3 se verificó el funcionamiento integrado de VRRP, OSPF, eBGP y el firewall de EDGE. En F4 se midieron los tiempos de convergencia de los cinco escenarios (sección 4.4): la detección domina la recuperación, con ≈ 129 s en BGP por hold-time, ≈ 28 s con `check-gateway` y pocos segundos en VRRP y OSPF.
 
 Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eBGP permiten disponer de alternativas de proveedor, pero no eliminan ese punto único de falla.
 
@@ -641,7 +704,7 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 - [x] Dos sesiones eBGP establecidas.
 - [x] Ambas LAN anunciadas a los dos ISP mediante OSPF→BGP.
 - [x] PC-USER alcanza las loopbacks de ambos ISP.
-- [ ] Cinco drills ejecutados y documentados con runbook, post-mortem y tiempo medido.
+- [x] Cinco drills ejecutados y documentados con runbook, post-mortem y tiempo medido.
 
 ### Seguridad
 
@@ -652,7 +715,7 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 - [x] Firewall IPv4 de EDGE aplicado.
 - [x] Winbox de EDGE restringido al origen autorizado.
 - [x] Bloqueo de TCP/8291 desde ISP-1 verificado.
-- [ ] Prueba de autenticación con clave incorrecta documentada.
+- [x] Prueba de autenticación con clave incorrecta documentada (OSPF).
 
 ### Operación
 
@@ -663,8 +726,8 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 - [x] Backups binarios cifrados de F2 documentados.
 - [x] Backups binarios posteriores a F3 generados y documentados.
 - [x] Restauración de un nodo con configuración posterior a F3 probada.
-- [ ] Monitoreo habilitado y documentado.
-- [ ] Runbook por drill y post-mortem global.
+- [x] Monitoreo habilitado y documentado.
+- [x] Runbook por drill y post-mortem global.
 
 ### Entrega
 
