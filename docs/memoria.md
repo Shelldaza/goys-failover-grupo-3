@@ -236,7 +236,27 @@ La consola local de GNS3 continúa disponible para administración.
 
 Las reglas documentadas corresponden al tráfico IPv4 del laboratorio.
 
----
+### 3.5 Configuración final
+
+Durante F5 se corrigieron las máscaras de las direcciones virtuales VRRP en DIST-1 y DIST-2: 192.168.10.1/32 y 192.168.20.1/32. Las direcciones de las interfaces físicas de ambas LAN conservan /24.
+
+Después del cambio se verificaron los roles master/backup de ambos grupos, las dos adyacencias OSPF Full de cada DIST y la conectividad desde PC-USER al gateway virtual, SRV y las loopbacks de ambos ISP. Se generaron nuevos exports de ambos DIST y se actualizaron sus configuraciones.
+
+Las configuraciones finales exportables de los siete routers se encuentran en `configs/final/`:
+
+| Equipo | Archivo | Export de origen |
+|--------|---------|------------------|
+| EDGE | `EDGE.rsc` | 16/10/2026 |
+| ISP-1 | `ISP-1.rsc` | 16/10/2026 |
+| ISP-2 | `ISP-2.rsc` | 16/10/2026 |
+| CORE-1 | `CORE-1.rsc` | 15/10/2026 |
+| CORE-2 | `CORE-2.rsc` | 15/10/2026 |
+| DIST-1 | `DIST-1.rsc` | 21/10/2026 |
+| DIST-2 | `DIST-2.rsc` | 21/10/2026 |
+
+Cada archivo corresponde al último estado de configuración documentado de su equipo. Las fechas difieren porque no todos los routers recibieron cambios permanentes en cada fase.
+
+Son exports completos con las claves visibles censuradas. Para restaurarlos deben reponerse las claves omitidas o censuradas y recrearse los usuarios conforme a la política de operación. No son scripts incrementales para aplicar sobre una configuración existente.
 
 ## 4. Verificación
 
@@ -386,7 +406,21 @@ Se cambió la clave del template OSPF de CORE-1 (que cubre todos sus enlaces int
 
 Los pings de VPCS tienen resolución de ≈ 1 s y los relojes de los routers difieren en pocos segundos, por lo que los tiempos son aproximados. El detalle está en el post-mortem global.
 
----
+### 4.5 Verificación final — F5
+
+Después de importar el proyecto portable posterior a F4 se comprobaron las sesiones BGP de EDGE, sus vecinos OSPF y la selección de la ruta por defecto mediante ISP-1.
+
+Tras corregir las máscaras de las VIP a /32, DIST-1 mantuvo el rol master del grupo 10 y DIST-2 el del grupo 20. Ambos conservaron dos vecinos OSPF Full. Los cinco chequeos Netwatch de DIST-1 se encontraron en estado up.
+
+Desde PC-USER se verificó conectividad al gateway virtual de USERS, SRV y las loopbacks de ambos ISP, con cinco respuestas en cada prueba.
+
+![Validación final DIST-1](../capturas/F5/F5-validacion-DIST-1.png)
+
+![Validación final DIST-2](../capturas/F5/F5-validacion-DIST-2.png)
+
+![Validación final PC-USER](../capturas/F5/F5-validacion-PC-USER.png)
+
+Las mediciones de los drills de F4 corresponden al estado previo a la corrección de máscaras de F5. En esta fase se repitieron las verificaciones funcionales indicadas, sin repetir las mediciones de convergencia.
 
 ## 5. Seguridad aplicada
 
@@ -431,9 +465,7 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `6933b0c`, en orden cronológico.
-El commit de esta actualización documental se incorporará en la
-siguiente actualización del registro.
+Registro de commits de `main` hasta `4761617`, en orden cronológico. El commit que incorpora esta actualización documental queda fuera de este corte y puede consultarse en el historial de Git.
 
 La columna Responsable corresponde al autor registrado en Git.
 Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol. Los dos commits del Drill 1 llevan la etiqueta `[5]` en lugar de `[R5]`.
@@ -513,7 +545,9 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-20 | F4 | `48ff457` | Irineo Hiriart | docs(capturas): evidencia backup binario DIST-1 [R5] | Solo agrega evidencias. |
 | 2026-10-20 | F4 | `40b36b4` | Irineo Hiriart | ops(backups): backup post-F4 de DIST-1 con Netwatch y clave censurada [R5] | Solo agrega un archivo; revertirlo no modifica el router. |
 | 2026-10-20 | F4 | `6933b0c` | Irineo Hiriart | docs(memoria): documentar export y backup binario de F4 y completar change log [R5] | `git revert`; revierte la actualización documental, sin modificar los routers. |
-
+| 2026-10-20 | F4 | `ca99ccb` | Irineo Hiriart | docs(memoria): completar change log con los commits finales de F4 [R5] | `git revert`; revierte la actualización documental, sin modificar los routers. |
+| 2026-10-21 | F5 | `40c7016` | Facundo Daza | fix(vrrp): corrijo mascaras de VIP y organizo exports finales de F5 [R5] | Revertir el commit modifica los archivos del repositorio. Para revertir la configuración activa debe restaurarse el estado previo de las VIP en ambos DIST y verificar conectividad. |
+| 2026-10-21 | F5 | `4761617` | Facundo Daza | docs(capturas): agrego verificaciones finales de F5 [R5] | `git revert`; elimina las evidencias incorporadas, sin modificar los routers. |
 
 ### 6.2 Backups
 
@@ -658,6 +692,19 @@ También se generó un backup binario cifrado de DIST-1 (`backup-DIST-1-2026-10-
 
 No se realizó una prueba de restauración posterior a F4; la última corresponde a F3 (ISP-2). Se mantiene la limitación de que los backups binarios solo residen en los routers.
 
+#### Exports de F5
+
+El 21/10/2026 se generaron nuevos exports de DIST-1 y DIST-2 después de corregir las máscaras de las direcciones virtuales VRRP a /32 y verificar conectividad, roles VRRP y adyacencias OSPF.
+
+Los archivos se guardaron en `backups/`:
+
+- `backup-DIST-1-2026-10-21.rsc`
+- `backup-DIST-2-2026-10-21.rsc`
+
+Las claves OSPF visibles se reemplazaron por `REDACTED` en las copias destinadas al repositorio. Ambos archivos se utilizaron para actualizar las configuraciones correspondientes en `configs/final/`.
+
+Estos exports documentan el estado posterior a la corrección de F5. Los backups binarios y las pruebas de restauración anteriores corresponden a las fechas y configuraciones descritas en sus respectivas secciones.
+
 ### 6.3 Monitoreo
 
 Se implementaron chequeos activos con Netwatch en DIST-1, con intervalo de 10 s y registro de cada cambio de estado en el log. No se habilitó SNMP: el laboratorio no dispone de un cliente SNMP para verificarlo y la comunidad sería un secreto adicional fuera del repositorio.
@@ -694,6 +741,7 @@ Las evidencias están organizadas por fase:
 | `capturas/F2/` | OSPF, VRRP, conectividad entre LAN, comprobación funcional de failover, backups binarios y restauración de CORE-1. |
 | `capturas/F3/` | Sesiones BGP, comprobación de TCP-MD5 sin revelar claves, rutas, salida por OSPF, pings, traceroutes y firewall. |
 | `capturas/F4/` | Drills 1 a 5, verificación de clave OSPF MD5 incorrecta y monitoreo con Netwatch. Prefijos `F4-drillN-`, `F4-seguridad-` y `F4-monitoreo-`. |
+| `capturas/F5/` | Verificación final del proyecto y comprobaciones posteriores a la corrección de las máscaras VRRP. |
 
 Los nombres de archivos deben coincidir con los enlaces utilizados en esta memoria. Las imágenes no deben mostrar claves vigentes.
 
@@ -701,13 +749,19 @@ Los nombres de archivos deben coincidir con los enlaces utilizados en esta memor
 
 ## 8. Conclusiones y lecciones aprendidas
 
-El post-mortem global de los drills está en `runbooks/post-mortem-global.md`. Las conclusiones finales sobre la resiliencia de la arquitectura se completan en F5.
+El laboratorio permitió integrar VRRP, OSPF y eBGP para proporcionar redundancia en diferentes partes de la red. VRRP mantiene un gateway disponible para cada LAN, OSPF permite utilizar caminos internos alternativos y eBGP ofrece una salida por un segundo proveedor. El funcionamiento conjunto se comprobó mediante las verificaciones de conectividad y los escenarios documentados en F4.
 
-Hasta F3 se verificó el funcionamiento integrado de VRRP, OSPF, eBGP y el firewall de EDGE. En F4 se midieron los tiempos de convergencia de los cinco escenarios (sección 4.4): la detección domina la recuperación, con ≈ 129 s en BGP por hold-time, ≈ 28 s con `check-gateway` y pocos segundos en VRRP y OSPF.
+Los resultados mostraron la importancia del mecanismo de detección. En el escenario VRRP se estimó una interrupción de aproximadamente 2,8 s, con la incertidumbre indicada en el runbook. En el corte OSPF se observó un paquete perdido durante la falla y otro durante la recuperación, sin una medición precisa del tiempo de interrupción. BGP detectó la caída al vencer el hold timer, aproximadamente 129 s después del corte según los relojes registrados. La ruta estática de prueba con check-gateway cambió al gateway de respaldo en aproximadamente 28 s. Estos resultados corresponden a pruebas diferentes y deben interpretarse con sus respectivas limitaciones.
 
-Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eBGP permiten disponer de alternativas de proveedor, pero no eliminan ese punto único de falla.
+El escenario de load-sharing confirmó que ambos routers de distribución pueden trabajar simultáneamente, cada uno como master de un grupo VRRP. El reparto se realiza por LAN y no garantiza una distribución uniforme del tráfico. Este escenario no incluyó una falla ni una medición de convergencia.
 
----
+La prueba con una clave OSPF MD5 incorrecta produjo rechazos de autenticación y la caída de la adyacencia observada. Al restaurar la clave vigente se recuperaron las adyacencias. Los chequeos Netwatch permitieron detectar cambios de disponibilidad y mostraron que el origen de los sondeos debe disponer de una ruta de retorno. Sus alertas son informativas: no se configuraron acciones de failover mediante Netwatch.
+
+Las pruebas de restauración permitieron identificar los elementos que deben reponerse al utilizar exports: usuarios, contraseñas y claves omitidas o censuradas. Los respaldos fechados, las evidencias y el historial de Git facilitaron la trazabilidad. Durante F5 se corrigieron las máscaras de las direcciones virtuales VRRP a /32 y se verificaron nuevamente los roles, las adyacencias OSPF y la conectividad. Los tiempos de F4 corresponden al estado anterior a esta corrección y no se volvieron a medir en F5.
+
+La arquitectura mantiene limitaciones conocidas. EDGE continúa siendo un punto único de falla. La loopback de cada ISP depende de ese proveedor, por lo que el cambio de la ruta por defecto demuestra la selección del proveedor alternativo, pero no la continuidad hacia un destino común. El monitoreo es local y los backups binarios permanecen en el almacenamiento de los routers. Como mejoras se proponen evaluar BFD o ajustes de timers, redundancia de EDGE, monitoreo externo y respaldos fuera de los equipos.
+
+El detalle de los procedimientos, las evidencias, las mediciones y sus limitaciones se conserva en los runbooks de F4 y en `runbooks/post-mortem-global.md`.
 
 ## 9. Referencias
 
@@ -739,7 +793,7 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 - [x] Dos sesiones eBGP establecidas.
 - [x] Ambas LAN anunciadas a los dos ISP mediante OSPF→BGP.
 - [x] PC-USER alcanza las loopbacks de ambos ISP.
-- [x] Cinco drills ejecutados y documentados con runbook, post-mortem y tiempo medido.
+- [x] Cinco drills ejecutados y documentados con runbook, post-mortem y tiempos registrados en los escenarios con falla.
 
 ### Seguridad
 
@@ -767,9 +821,9 @@ Se mantiene como limitación conocida el único router EDGE. Las dos sesiones eB
 
 ### Entrega
 
-- [ ] Memoria completa, incluidas F4 y F5.
-- [ ] Repositorio con estructura y trazabilidad de commits revisados para la entrega final.
-- [ ] Backlog con todos los criterios de aceptación cumplidos.
-- [ ] Evidencias completas de todas las fases en `capturas/`.
-- [ ] Configuraciones finales organizadas en `configs/`.
-- [ ] Cada integrante puede defender su parte y una parte ajena.
+- [x] Memoria completa, incluidas F4 y F5.
+- [x] Repositorio con estructura y trazabilidad de commits revisados para la entrega final.
+- [x] Backlog con todos los criterios de aceptación cumplidos.
+- [x] Evidencias completas de todas las fases en `capturas/`.
+- [x] Configuraciones finales organizadas en `configs/`.
+- [x] Cada integrante puede defender su parte y una parte ajena.

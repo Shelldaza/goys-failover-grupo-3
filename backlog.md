@@ -135,16 +135,18 @@
 ### Verificación de seguridad (clave incorrecta falla)
 - [x] [R3] Cambiar intencionalmente clave MD5 en CORE-1 y documentar caída de OSPF.
 
----
 
 ## Epic F5 — Memoria + defensa · *vence vie 23/10*
 
-### Memoria (plantilla completa)
-- [ ] [R5] Volcar todas las configuraciones `.rsc` al documento.
-- [ ] [R5] Adjuntar capturas de GNS3 requeridas.
+### Memoria y configuraciones finales
+- [x] [R5] Organizar los siete exports finales en configs/final/ y documentar su origen y las condiciones de restauración.
+- [x] [R5] Corregir las máscaras de las VIP VRRP a /32 en ambos DIST y verificar roles, adyacencias y conectividad.
+- [x] [R5] Incorporar las capturas de verificación final en capturas/F5/.
+- [ ] [R5] Completar y revisar la memoria final: conclusiones, referencias a archivos y change log.
 
-### Backlog cerrado (todo en "hecho")
-- [ ] [R1] Revisar que no queden corchetes vacíos.
+### Revisión de entrega
+- [ ] [R1] Verificar coherencia entre memoria, backlog, README, configuraciones y evidencias.
+- [ ] [R1] Confirmar que todas las tareas estén cumplidas antes de cerrar el backlog.
 
 ### Defensa oral (parte propia + ajena)
 - [ ] [R1] Facundo: ensayar Edge, BGP y Firewall.
