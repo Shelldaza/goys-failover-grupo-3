@@ -30,7 +30,7 @@ F0 a F4 completadas. F5 en cierre documental y preparación de la defensa.
 | F2 — VRRP y OSPF | Dos grupos VRRP con reparto de carga y autenticación AH. OSPF área 0 con MD5, incluido core-core. Conectividad entre LAN verificada. |
 | F3 — BGP y firewall | Dos sesiones eBGP con TCP-MD5, anuncios de las LAN filtrados, conectividad hacia las loopbacks de ambos ISP y firewall con gestión restringida en EDGE. |
 | F4 — Drills y monitoreo | Cinco escenarios documentados con runbooks y post-mortem; tiempos registrados en los escenarios con falla. Prueba de clave OSPF incorrecta y monitoreo con Netwatch. |
-| F5 — Cierre y defensa | Configuraciones finales organizadas, VIP VRRP corregidas a /32 y verificaciones funcionales documentadas. Revisión final y ensayo de defensa pendientes. |
+| F5 — Cierre y defensa | Siete configuraciones finales organizadas, VIP VRRP corregidas a /32, verificaciones funcionales documentadas y memoria final con conclusiones y trazabilidad de cambios. |
 
 Se documentaron backups binarios cifrados y pruebas de restauración desde exports: CORE-1 durante F2 e ISP-2 durante F3.
 
@@ -64,4 +64,6 @@ Los backups binarios contienen información sensible, no se versionan y permanec
 
 Fecha límite: viernes 23/10/2026.
 
-El estado de las tareas de revisión final y preparación de la defensa se mantiene en `backlog.md`.
+La memoria, los respaldos textuales, las configuraciones finales, las evidencias y los runbooks se encuentran organizados en este repositorio. El cumplimiento de las tareas se registra en `backlog.md`.
+
+La defensa comprende la explicación de la parte propia y de una parte realizada por el otro integrante.

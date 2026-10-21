@@ -465,7 +465,7 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `4761617`, en orden cronológico. El commit que incorpora esta actualización documental queda fuera de este corte y puede consultarse en el historial de Git.
+Registro de commits de `main` hasta `ebc84ee`, en orden cronológico. El commit de cierre que incorpora esta actualización queda fuera de este corte y puede consultarse en el historial de Git.
 
 La columna Responsable corresponde al autor registrado en Git.
 Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol. Los dos commits del Drill 1 llevan la etiqueta `[5]` en lugar de `[R5]`.
@@ -548,6 +548,8 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-20 | F4 | `ca99ccb` | Irineo Hiriart | docs(memoria): completar change log con los commits finales de F4 [R5] | `git revert`; revierte la actualización documental, sin modificar los routers. |
 | 2026-10-21 | F5 | `40c7016` | Facundo Daza | fix(vrrp): corrijo mascaras de VIP y organizo exports finales de F5 [R5] | Revertir el commit modifica los archivos del repositorio. Para revertir la configuración activa debe restaurarse el estado previo de las VIP en ambos DIST y verificar conectividad. |
 | 2026-10-21 | F5 | `4761617` | Facundo Daza | docs(capturas): agrego verificaciones finales de F5 [R5] | `git revert`; elimina las evidencias incorporadas, sin modificar los routers. |
+| 2026-10-21 | F5 | `4227e29` | Facundo Daza | docs(f5): actualizo memoria conclusiones backlog y change log [R5] | `git revert`; revierte los cambios documentales, sin modificar los routers. |
+| 2026-10-21 | F5 | `ebc84ee` | Facundo Daza | docs(readme): actualizo estado de F5 y acceso a configuraciones finales [R5] | `git revert`; revierte el README, sin modificar los routers. |
 
 ### 6.2 Backups
 
@@ -727,7 +729,7 @@ Prueba: al deshabilitar `ether1` de ISP-1, `ISP-1-lo` pasó a `down` en ≈ 8 s 
 
 ![Tabla de rutas de DIST-1](../capturas/F4/F4-monitoreo-rutas-DIST-1.png)
 
-Limitaciones: monitoreo local en un solo router, sin alertas externas ni métricas históricas. Los chequeos de Netwatch existen solo en la configuración activa de DIST-1 y no figuran en los exports anteriores a F4.
+Limitaciones: monitoreo local en un solo router, sin alertas externas ni métricas históricas. Los chequeos de Netwatch están configurados en DIST-1 y se incluyen en su export posterior a F4 y en su configuración final de F5. No figuran en los exports anteriores a F4.
 
 ---
 
@@ -808,7 +810,7 @@ El detalle de los procedimientos, las evidencias, las mediciones y sus limitacio
 
 ### Operación
 
-- [x] Change log actualizado con todos los commits reales, incluidos los de F3.
+- [x] Change log documentado hasta `ebc84ee`; el commit de cierre queda registrado en el historial de Git.
 - [x] Exports posteriores a F1 y F2 generados.
 - [x] Exports finales de EDGE e ISP posteriores a F3 generados y revisados.
 - [x] Restauración desde export probada en CORE-1 durante F2.

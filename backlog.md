@@ -70,7 +70,7 @@
 ### VRRP (2 grupos, load-sharing, auth)
 - [x] [R4] configurar VRRP vrid 10 en DIST-1 (master)
 - [x] [R4] configurar VRRP vrid 20 en DIST-2 (master)
-- [x] [R4] activar auth AH (clave VRRP de F0) en ambos grupos
+- [x] [R4] Activar autenticación AH con la clave VRRP vigente en ambos grupos.
 - [x] [R5] verificar master/backup con `/interface vrrp print`
 
 ### OSPF área 0 (con MD5, incluido core–core)
@@ -142,13 +142,13 @@
 - [x] [R5] Organizar los siete exports finales en configs/final/ y documentar su origen y las condiciones de restauración.
 - [x] [R5] Corregir las máscaras de las VIP VRRP a /32 en ambos DIST y verificar roles, adyacencias y conectividad.
 - [x] [R5] Incorporar las capturas de verificación final en capturas/F5/.
-- [ ] [R5] Completar y revisar la memoria final: conclusiones, referencias a archivos y change log.
+- [x] [R5] Completar y revisar la memoria final: conclusiones, referencias a archivos y change log.
 
 ### Revisión de entrega
-- [ ] [R1] Verificar coherencia entre memoria, backlog, README, configuraciones y evidencias.
-- [ ] [R1] Confirmar que todas las tareas estén cumplidas antes de cerrar el backlog.
+- [x] [R1] Verificar coherencia entre memoria, backlog, README, configuraciones y evidencias.
+- [x] [R1] Confirmar que todas las tareas estén cumplidas antes de cerrar el backlog.
 
 ### Defensa oral (parte propia + ajena)
-- [ ] [R1] Facundo: ensayar Edge, BGP y Firewall.
-- [ ] [R3] Irineo: ensayar OSPF, VRRP y Drills.
-- [ ] [R5] Simular cruce de preguntas.
+- [x] [R1] Facundo: ensayar Edge, BGP y Firewall.
+- [x] [R3] Irineo: ensayar OSPF, VRRP y Drills.
+- [x] [R5] Simular cruce de preguntas.
