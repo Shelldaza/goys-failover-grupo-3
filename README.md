@@ -6,9 +6,11 @@ Gestión Operativa y Seguridad en Redes (GOYS) — UTN FRLP
 
 ## Proyecto
 
-Laboratorio grupal de una red empresarial de cinco capas en GNS3,
-con redundancia de gateway mediante VRRP, enrutamiento interno
-OSPF y dos proveedores conectados mediante eBGP.
+Laboratorio grupal de una red empresarial de cinco capas en GNS3, con redundancia de gateway mediante VRRP, enrutamiento interno OSPF y dos proveedores conectados mediante eBGP.
+
+**Grupo:** 3  
+**Fecha de entrega:** viernes 23/10/2026  
+**Plataforma:** GNS3 y MikroTik CHR con RouterOS 7.16.
 
 ## Integrantes y roles
 
@@ -19,32 +21,47 @@ OSPF y dos proveedores conectados mediante eBGP.
 
 ## Estado del proyecto
 
-F0, F1, F2, F3 y F4 completadas.
+F0 a F4 completadas. F5 en cierre documental y preparación de la defensa.
 
 | Fase | Resultado |
 |------|-----------|
 | F0 — Diseño | IPAM, corrección del diagrama, políticas y repositorio. |
-| F1 — Topología y hardening | 7 CHR, 2 switches y 2 hosts conectados mediante 15 enlaces; IP y loopbacks configuradas. hardening, exports y snapshot BASE documentados. |
-| F2 — VRRP y OSPF | Dos grupos VRRP con reparto de carga y autenticación. OSPF área 0 con MD5, incluido core-core. conectividad entre LAN verificada. |
-| F3 — BGP y firewall | Dos sesiones eBGP con TCP-MD5; anuncios de las LAN filtrados; salida hacia loopbacks de ambos ISP; firewall y gestión restringida en EDGE. |
-| F4 — Drills y monitoreo | Cinco drills con runbook y tiempos medidos, post-mortem global, prueba de clave OSPF incorrecta y chequeos con Netwatch. |
+| F1 — Topología y hardening | 7 CHR, 2 switches y 2 hosts conectados mediante 15 enlaces. Direccionamiento, hardening, exports y snapshot BASE documentados. |
+| F2 — VRRP y OSPF | Dos grupos VRRP con reparto de carga y autenticación AH. OSPF área 0 con MD5, incluido core-core. Conectividad entre LAN verificada. |
+| F3 — BGP y firewall | Dos sesiones eBGP con TCP-MD5, anuncios de las LAN filtrados, conectividad hacia las loopbacks de ambos ISP y firewall con gestión restringida en EDGE. |
+| F4 — Drills y monitoreo | Cinco escenarios documentados con runbooks y post-mortem; tiempos registrados en los escenarios con falla. Prueba de clave OSPF incorrecta y monitoreo con Netwatch. |
+| F5 — Cierre y defensa | Configuraciones finales organizadas, VIP VRRP corregidas a /32 y verificaciones funcionales documentadas. Revisión final y ensayo de defensa pendientes. |
 
-Se documentaron backups binarios cifrados y pruebas de restauración
-desde exports: CORE-1 durante F2 e ISP-2 durante F3.
-
+Se documentaron backups binarios cifrados y pruebas de restauración desde exports: CORE-1 durante F2 e ISP-2 durante F3.
 
 ## Documentación y archivos
 
-- `docs/memoria.md`: diseño, configuración, verificaciones y change log.
-- `backlog.md`: tareas, responsables y estados.
-- `configs/`: scripts y configuraciones por router y fase.
-- `backups/`: exports fechados con claves censuradas.
-- `capturas/`: evidencias organizadas por fase.
-- `runbooks/`: un runbook por drill, verificación de seguridad, monitoreo y post-mortem global.
+- [Memoria técnica](docs/memoria.md): diseño, configuración, verificaciones, conclusiones y change log.
+- [Backlog](backlog.md): tareas, responsables y estados.
+- [Configuraciones finales](configs/final/): exports de los siete routers correspondientes a sus últimos estados documentados.
+- [Configuraciones por fase](configs/): scripts y configuraciones de implementación.
+- [Backups](backups/): exports fechados con claves visibles censuradas.
+- [Capturas](capturas/): evidencias organizadas por fase, incluidas las verificaciones finales de F5.
+- [Runbooks](runbooks/): procedimientos, resultados y limitaciones de los drills, verificación de seguridad, monitoreo y post-mortem global.
 
-Los exports completos no deben importarse sobre equipos ya configurados
-sin revisar previamente el procedimiento de restauración.
+## Restauración
 
-## Próximas etapas
+Los archivos de `configs/final/` son exports completos y no scripts incrementales para ejecutar sobre una configuración existente.
 
-- F5 — Memoria final y defensa: viernes 23/10/2026.
+La restauración requiere reponer las claves omitidas o censuradas y recrear los usuarios y sus contraseñas, conforme al procedimiento documentado en la memoria.
+
+Los backups binarios contienen información sensible, no se versionan y permanecen en el almacenamiento de los routers.
+
+## Alcance y limitaciones
+
+- Los ISP simulan proveedores externos; las pruebas no requieren acceso a Internet real.
+- EDGE constituye un punto único de falla.
+- La loopback de cada ISP depende de ese proveedor. El cambio de la ruta por defecto demuestra la selección del proveedor alternativo, pero no la continuidad hacia un destino común.
+- Netwatch registra cambios de disponibilidad localmente; no se configuraron alertas externas ni acciones automáticas de failover.
+- Las mediciones de F4 corresponden al estado anterior a la corrección de máscaras VRRP realizada en F5. Después de la corrección se repitieron las verificaciones funcionales, sin volver a medir los tiempos de convergencia.
+
+## Entrega
+
+Fecha límite: viernes 23/10/2026.
+
+El estado de las tareas de revisión final y preparación de la defensa se mantiene en `backlog.md`.
