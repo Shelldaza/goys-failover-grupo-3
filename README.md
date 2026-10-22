@@ -9,7 +9,7 @@ Gestión Operativa y Seguridad en Redes (GOYS) — UTN FRLP
 Laboratorio grupal de una red empresarial de cinco capas en GNS3, con redundancia de gateway mediante VRRP, enrutamiento interno OSPF y dos proveedores conectados mediante eBGP.
 
 **Grupo:** 3  
-**Fecha de entrega:** viernes 23/10/2026  
+**Fecha limite de entrega:** viernes 23/10/2026  
 **Plataforma:** GNS3 y MikroTik CHR con RouterOS 7.16.
 
 ## Integrantes y roles
@@ -21,7 +21,7 @@ Laboratorio grupal de una red empresarial de cinco capas en GNS3, con redundanci
 
 ## Estado del proyecto
 
-F0 a F4 completadas. F5 en cierre documental y preparación de la defensa.
+Se ha completado las 5 Fases del laboratorio.
 
 | Fase | Resultado |
 |------|-----------|
@@ -54,15 +54,15 @@ Los backups binarios contienen información sensible, no se versionan y permanec
 
 ## Alcance y limitaciones
 
-- Los ISP simulan proveedores externos; las pruebas no requieren acceso a Internet real.
+- Los ISP simulan proveedores externos y las pruebas no requieren acceso a Internet real.
 - EDGE constituye un punto único de falla.
 - La loopback de cada ISP depende de ese proveedor. El cambio de la ruta por defecto demuestra la selección del proveedor alternativo, pero no la continuidad hacia un destino común.
 - Netwatch registra cambios de disponibilidad localmente; no se configuraron alertas externas ni acciones automáticas de failover.
-- Las mediciones de F4 corresponden al estado anterior a la corrección de máscaras VRRP realizada en F5. Después de la corrección se repitieron las verificaciones funcionales, sin volver a medir los tiempos de convergencia.
+- Los tiempos de convergencia documentados corresponden a los drills de F4. Tras ajustar las máscaras de las VIP en F5, se verificaron los roles VRRP, las adyacencias OSPF y la conectividad.
 
 ## Entrega
 
-Fecha límite: viernes 23/10/2026.
+la fecha límite era el viernes 23/10/2026, nosotros lo entregamos e informamos el 22/10/2026, es decir acorde al tiempo definido.
 
 La memoria, los respaldos textuales, las configuraciones finales, las evidencias y los runbooks se encuentran organizados en este repositorio. El cumplimiento de las tareas se registra en `backlog.md`.
 
