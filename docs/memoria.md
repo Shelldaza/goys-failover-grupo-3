@@ -90,9 +90,11 @@ Las loopbacks se configuraron sobre la interfaz `lo`. Estas direcciones se utili
 - **Direccionamiento:** se utiliza configuración estática. Los clientes DHCP preconfigurados en ether1 se mantienen deshabilitados.
 - **Claves de autenticación:** cada protocolo utiliza una clave distinta. No se versionan las claves OSPF, BGP ni VRRP. En las copias destinadas al repositorio se reemplazan los valores visibles por `<CLAVE_OSPF>`, `<CLAVE_BGP>`, `<CLAVE_VRRP>` o `REDACTED`; otros valores sensibles pueden quedar omitidos por el propio export.
 - **Rotación:** las claves iniciales de F0 se publicaron por error y se retiraron. Se documentó su rotación el 15/10/2026 y se configuró una clave BGP nueva al implementar F3 el 16/10/2026.
+- **Exposición detectada el 22/10/2026:** se encontró una clave OSPF visible en las configuraciones finales publicadas. Se reemplazó por `REDACTED` en los archivos actuales. Como el valor permanece en el historial de Git, queda pendiente su rotación coordinada en EDGE, CORE-1, CORE-2, DIST-1 y DIST-2.
+
 - **Intercambio de claves:** se guardan fuera del repositorio y se comparten entre los integrantes por mensajería privada.
 
-La mensajería privada no reemplaza a un gestor de secretos: las claves quedan en el historial y no existe una auditoría específica de acceso y rotación. Se acepta como mecanismo del laboratorio; en producción corresponde un gestor de secretos con control de acceso y auditoría.
+Entendemos que la mensajería privada no reemplaza a un gestor de secretos: las claves quedan en el historial y no existe una auditoría específica de acceso y rotación. Se entiende que para un laboratorio academico no hay tanto problema, pero entendemos que en producción corresponde un gestor de secretos con control de acceso y auditoría.
 
 ### 1.4 Política de operación
 
@@ -121,7 +123,6 @@ Mantener el backup únicamente dentro del router es una limitación operativa: n
 
 Revertir un commit de configuración no modifica automáticamente los routers: la reversión operativa debe ejecutarse y verificarse por separado.
 
----
 
 ## 2. Topología
 
@@ -131,9 +132,8 @@ Cada switch de acceso conecta su host con ambos routers de distribución. USERS 
 
 Los routers ISP simulan los proveedores externos. No se requiere conexión a Internet real para las pruebas previstas.
 
-![Topología F1](../capturas/F1/F1-topologia.png)
+![Topología](/docs/diagramas/topologia.png)
 
----
 
 ## 3. Configuración
 
@@ -459,7 +459,6 @@ La autorización de Winbox desde PC-USER se comprobó mediante la configuración
 
 La prueba de bloqueo de gestión no sustituye la prueba de autenticación con clave incorrecta, que se realizó en F4 sobre OSPF (sección 4.4).
 
----
 
 ## 6. Gestión operativa
 

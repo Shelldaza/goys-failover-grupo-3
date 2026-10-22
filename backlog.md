@@ -36,8 +36,6 @@
 - [x] [R1] Subir Memoria F0 inicial.
 - [x] [R5] Sincronizar y actualizar estado del `backlog.md`.
 
----
-
 ## Epic F1 — Topología + hardening + backup · *vence vie 9/10*
 
 ### Despliegue (7 CHR + 2 switches + 2 hosts)
@@ -63,7 +61,6 @@
 - [x] [R5] Generar y guardar los siete exports .rsc.
 - [x] [R5] Comitear los exports y la documentación de F1 a Git.
 
----
 
 ## Epic F2 — VRRP + OSPF · *vence vie 16/10*
 
@@ -82,7 +79,6 @@
 - [x] [R5] Ejecutar ping continuo de PC-USER a IP Virtual 192.168.10.1 (con failover y recuperación).
 - [x] [R5] Probar ping de PC-USER a SRV para validar enrutamiento inter-VLAN.
 
----
 
 ## Epic F3 — BGP + firewall · *vence vie 16/10*
 
