@@ -90,7 +90,7 @@ Las loopbacks se configuraron sobre la interfaz `lo`. Estas direcciones se utili
 - **Direccionamiento:** se utiliza configuración estática. Los clientes DHCP preconfigurados en ether1 se mantienen deshabilitados.
 - **Claves de autenticación:** cada protocolo utiliza una clave distinta. No se versionan las claves OSPF, BGP ni VRRP. En las copias destinadas al repositorio se reemplazan los valores visibles por `<CLAVE_OSPF>`, `<CLAVE_BGP>`, `<CLAVE_VRRP>` o `REDACTED`; otros valores sensibles pueden quedar omitidos por el propio export.
 - **Rotación:** las claves iniciales de F0 se publicaron por error y se retiraron. Se documentó su rotación el 15/10/2026 y se configuró una clave BGP nueva al implementar F3 el 16/10/2026.
-- **Exposición detectada el 22/10/2026:** se encontró una clave OSPF visible en las configuraciones finales publicadas. Se reemplazó por `REDACTED` en los archivos actuales. Como el valor permanece en el historial de Git, queda pendiente su rotación coordinada en EDGE, CORE-1, CORE-2, DIST-1 y DIST-2.
+- **Exposición y rotación del 22/10/2026:** se detectó una clave OSPF visible en las configuraciones finales publicadas y se censuraron las copias actuales. Se rotó la clave en EDGE, CORE-1, CORE-2, DIST-1 y DIST-2, y se verificó la recuperación de todas las adyacencias OSPF esperadas en estado Full. 
 
 - **Intercambio de claves:** se guardan fuera del repositorio y se comparten entre los integrantes por mensajería privada.
 
