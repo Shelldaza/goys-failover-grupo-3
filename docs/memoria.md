@@ -132,7 +132,7 @@ Cada switch de acceso conecta su host con ambos routers de distribución. USERS 
 
 Los routers ISP simulan los proveedores externos. No se requiere conexión a Internet real para las pruebas previstas.
 
-![Topología](/docs/diagramas/topologia.png)
+![Topología](diagramas/Topologia.png)
 
 
 ## 3. Configuración
@@ -464,7 +464,7 @@ La prueba de bloqueo de gestión no sustituye la prueba de autenticación con cl
 
 ### 6.1 Change log
 
-Registro de commits de `main` hasta `ebc84ee`, en orden cronológico. El commit de cierre que incorpora esta actualización queda fuera de este corte y puede consultarse en el historial de Git.
+Registro de commits de `main` hasta `f09c0d2`, en orden cronológico. El commit final que incorpora la topología anotada y esta actualización documental queda fuera de este corte y puede consultarse en el historial de Git.
 
 La columna Responsable corresponde al autor registrado en Git.
 Los commits de F0 y F1 son anteriores a la convención de etiqueta de rol. Los dos commits del Drill 1 llevan la etiqueta `[5]` en lugar de `[R5]`.
@@ -549,6 +549,13 @@ automáticamente las configuraciones activas de los routers.
 | 2026-10-21 | F5 | `4761617` | Facundo Daza | docs(capturas): agrego verificaciones finales de F5 [R5] | `git revert`; elimina las evidencias incorporadas, sin modificar los routers. |
 | 2026-10-21 | F5 | `4227e29` | Facundo Daza | docs(f5): actualizo memoria conclusiones backlog y change log [R5] | `git revert`; revierte los cambios documentales, sin modificar los routers. |
 | 2026-10-21 | F5 | `ebc84ee` | Facundo Daza | docs(readme): actualizo estado de F5 y acceso a configuraciones finales [R5] | `git revert`; revierte el README, sin modificar los routers. |
+| 2026-10-21 | F5 | `5ab1481` | Facundo Daza | docs(f5): cierro documentacion y checklist de entrega [R1][R5] | `git revert`; revierte los cambios documentales, sin modificar los routers. |
+| 2026-10-22 | F5 | `5feb05f` | Facundo Daza | docs(diagramas): incorporo topologia implementada del laboratorio [R5] | `git revert`; retira el diagrama incorporado, sin modificar la topología activa de GNS3. |
+| 2026-10-22 | F5 | `a7f510a` | Facundo Daza | chore(repo): elimino gitkeep de carpetas con contenido [R5] | `git revert`; restaura los archivos de marcador, sin modificar las configuraciones. |
+| 2026-10-22 | F5 | `0d949e7` | Facundo Daza | fix(seguridad): censuro claves OSPF en configuraciones finales [R5] | No revertir: reintroduce claves en las copias versionadas. La censura no elimina los valores del historial anterior. |
+| 2026-10-22 | F5 | `752cb6c` | Facundo Daza | docs(memoria): mejoro redaccion y documento exposicion OSPF con rotacion pendiente [R5] | Registra el estado previo a la rotación documentada en f09c0d2. Revertirlo solo modifica documentación. |
+| 2026-10-22 | F5 | `8be327b` | Facundo Daza | docs(README): mejoro redaccion para una versión final | `git revert`; revierte el README, sin modificar los routers. |
+| 2026-10-22 | F5 | `f09c0d2` | Facundo Daza | docs(seguridad): documento rotacion OSPF y verificacion de adyacencias [R5] | Revertirlo solo modifica la documentación; no revierte la rotación aplicada en los routers. |
 
 ### 6.2 Backups
 
@@ -809,7 +816,7 @@ El detalle de los procedimientos, las evidencias, las mediciones y sus limitacio
 
 ### Operación
 
-- [x] Change log documentado hasta `ebc84ee`; el commit de cierre queda registrado en el historial de Git.
+- [x] Change log documentado hasta `f09c0d2`; el commit de cierre queda registrado en el historial de Git.
 - [x] Exports posteriores a F1 y F2 generados.
 - [x] Exports finales de EDGE e ISP posteriores a F3 generados y revisados.
 - [x] Restauración desde export probada en CORE-1 durante F2.
